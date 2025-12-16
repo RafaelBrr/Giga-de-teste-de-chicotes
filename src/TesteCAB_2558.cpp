@@ -37,7 +37,7 @@ void configurarPinosCabo10Vias() {
 bool realizarTesteContinuidade() {
   Serial.println("⏳ Iniciando teste de continuidade do cabo de 10 vias...");
   
-  bool sucesso = true;
+bool continuidade = true;
 
 u8g2.clearBuffer();
 u8g2.setFont(u8g2_font_6x12_tr);
@@ -64,24 +64,26 @@ u8g2.sendBuffer();
       Serial.print("❌ Via ");
       Serial.print(i);
       Serial.println(": FALHA (sem continuidade)");
-      sucesso = false;
+      continuidade = false;
     }
 
     digitalWrite(txPins[i], HIGH); // Desativa o pino atual
   }
 
-  if (sucesso) {
+  if (continuidade) {
     Serial.println("🟢 Teste de continuidade: SUCESSO (todas as vias conectadas)");
   } else {
     Serial.println("🔴 Teste de continuidade: FALHA EM UMA OU MAIS VIAS");
   }
 
-  return sucesso;
+  return continuidade;
 }
 
 //************************************************************************************************************************** */
 //Teste de curto entre N vias (genérico)
 bool testeCurtoEntreVias() {
+
+bool testeCurto = true;
 
   for (int i = 0; i < NUM_VIAS; i++) {
 
@@ -106,12 +108,14 @@ bool testeCurtoEntreVias() {
     }
   }
 
-  return false; // ✅ Nenhum curto
+  return testeCurto; // ✅ Nenhum curto
 }
 
 //************************************************************************************************************************** */
 //Versão mais avançada (ideal para exibir no display OLED ou enviar ao LabVIEW).
-void testeCurtoDetalhado() {
+bool testeCurtoDetalhado() {
+
+bool testeCurto = true;
 
   for (int i = 0; i < NUM_VIAS; i++) {
 
@@ -135,11 +139,15 @@ void testeCurtoDetalhado() {
       }
     }
   }
+
+  return testeCurto;
 }
 
 //************************************************************************************************************************** */
 
 bool testeSequenciaCabo() {
+
+    bool sequenciaCorreta = true;
 
   for (int i = 0; i < NUM_VIAS; i++) {
 
@@ -177,12 +185,14 @@ bool testeSequenciaCabo() {
     }
   }
 
-  return true; // sequência correta
+  return sequenciaCorreta; // sequência correta
 }
 
 //*************************************************************************************************************************** */
 
-void testeSequenciaDetalhado() {
+bool testeSequenciaDetalhado() {
+
+    bool testeSequeciaDetalhado = true;
 
   for (int i = 0; i < NUM_VIAS; i++) {
 
@@ -220,6 +230,8 @@ void testeSequenciaDetalhado() {
       Serial.println(": OK");
     }
   }
+
+  return testeSequeciaDetalhado;
 }
 
 

@@ -9,7 +9,7 @@
 //U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R0, /*clk=*/52, /*data=*/51, /*cs=*/53, /*reset=*/U8X8_PIN_NONE);
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);
 
-String cableModel = "ddd";
+String cableModel = "";
 
 int tipo = -1; // Tipo de cabo a ser testado
 bool res = false; // Resultado do teste de continuidade
