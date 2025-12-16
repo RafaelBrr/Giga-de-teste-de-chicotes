@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "U8g2lib.h"
+#include "TesteCAB_2558.h"
 
 U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R0, /*clk=*/52, /*data=*/51, /*cs=*/53, /*reset=*/U8X8_PIN_NONE);
 
@@ -181,6 +182,45 @@ bool testeSequenciaCabo() {
 
 //*************************************************************************************************************************** */
 
+void testeSequenciaDetalhado() {
+
+  for (int i = 0; i < NUM_VIAS; i++) {
+
+    for (int j = 0; j < NUM_VIAS; j++) {
+      pinMode(pinosA[j], INPUT_PULLUP);
+      pinMode(pinosB[j], INPUT_PULLUP);
+    }
+
+    pinMode(pinosA[i], OUTPUT);
+    digitalWrite(pinosA[i], LOW);
+
+    delay(5);
+
+    int detectado = -1;
+
+    for (int j = 0; j < NUM_VIAS; j++) {
+      if (digitalRead(pinosB[j]) == LOW) {
+        detectado = j;
+        break;
+      }
+    }
+
+    if (detectado == -1) {
+      Serial.print("Via ");
+      Serial.print(i);
+      Serial.println(": fio aberto");
+    } else if (detectado != i) {
+      Serial.print("Via ");
+      Serial.print(i);
+      Serial.print(" ligada incorretamente à via ");
+      Serial.println(detectado);
+    } else {
+      Serial.print("Via ");
+      Serial.print(i);
+      Serial.println(": OK");
+    }
+  }
+}
 
 
 //******************************************************************************************************************************* */
