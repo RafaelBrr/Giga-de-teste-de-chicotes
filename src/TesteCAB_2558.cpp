@@ -12,6 +12,15 @@ const int rxPins[10] = {32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
 const int NUM_VIAS = 6;
 const int vias[NUM_VIAS] = {22, 23, 24, 25, 26, 27}; // pinos do Arduino
 
+//const int NUM_VIAS = 6;
+
+// Lado A do cabo
+const int pinosA[NUM_VIAS] = {22, 23, 24, 25, 26, 27};
+
+// Lado B do cabo
+const int pinosB[NUM_VIAS] = {30, 31, 32, 33, 34, 35};
+
+
 
 void configurarPinosCabo10Vias() {
   for (int i = 0; i < 10; i++) {
@@ -128,3 +137,50 @@ void testeCurtoDetalhado() {
 }
 
 //************************************************************************************************************************** */
+
+bool testeSequenciaCabo() {
+
+  for (int i = 0; i < NUM_VIAS; i++) {
+
+    // 1️⃣ Coloca todos os pinos A como INPUT_PULLUP
+    for (int j = 0; j < NUM_VIAS; j++) {
+      pinMode(pinosA[j], INPUT_PULLUP);
+      pinMode(pinosB[j], INPUT_PULLUP);
+    }
+
+    // 2️⃣ Ativa apenas a via atual do lado A
+    pinMode(pinosA[i], OUTPUT);
+    digitalWrite(pinosA[i], LOW);
+
+    delay(5); // estabilização
+
+    int viaDetectada = -1;
+
+    // 3️⃣ Varre lado B
+    for (int j = 0; j < NUM_VIAS; j++) {
+      if (digitalRead(pinosB[j]) == LOW) {
+        viaDetectada = j;
+        break;
+      }
+    }
+
+    // 4️⃣ Validação
+    if (viaDetectada == -1) {
+      // fio aberto
+      return false;
+    }
+
+    if (viaDetectada != i) {
+      // fio trocado (cross)
+      return false;
+    }
+  }
+
+  return true; // sequência correta
+}
+
+//*************************************************************************************************************************** */
+
+
+
+//******************************************************************************************************************************* */
