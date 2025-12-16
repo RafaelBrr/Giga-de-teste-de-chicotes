@@ -9,6 +9,10 @@ const int txPins[10] = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
 // Pinos de entrada (lado B do cabo)
 const int rxPins[10] = {32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
 
+const int NUM_VIAS = 6;
+const int vias[NUM_VIAS] = {22, 23, 24, 25, 26, 27}; // pinos do Arduino
+
+
 void configurarPinosCabo10Vias() {
   for (int i = 0; i < 10; i++) {
     pinMode(txPins[i], OUTPUT);
@@ -64,3 +68,63 @@ u8g2.sendBuffer();
 
   return sucesso;
 }
+
+//************************************************************************************************************************** */
+//Teste de curto entre N vias (genérico)
+bool testeCurtoEntreVias() {
+
+  for (int i = 0; i < NUM_VIAS; i++) {
+
+    // 1️⃣ Configura todas como INPUT_PULLUP
+    for (int j = 0; j < NUM_VIAS; j++) {
+      pinMode(vias[j], INPUT_PULLUP);
+    }
+
+    // 2️⃣ Coloca uma via como saída LOW
+    pinMode(vias[i], OUTPUT);
+    digitalWrite(vias[i], LOW);
+
+    delay(5); // tempo para estabilizar
+
+    // 3️⃣ Verifica se alguma outra via foi puxada para LOW
+    for (int j = 0; j < NUM_VIAS; j++) {
+      if (j == i) continue;
+
+      if (digitalRead(vias[j]) == LOW) {
+        return true; // ❌ Curto detectado
+      }
+    }
+  }
+
+  return false; // ✅ Nenhum curto
+}
+
+//************************************************************************************************************************** */
+//Versão mais avançada (ideal para exibir no display OLED ou enviar ao LabVIEW).
+void testeCurtoDetalhado() {
+
+  for (int i = 0; i < NUM_VIAS; i++) {
+
+    for (int j = 0; j < NUM_VIAS; j++) {
+      pinMode(vias[j], INPUT_PULLUP);
+    }
+
+    pinMode(vias[i], OUTPUT);
+    digitalWrite(vias[i], LOW);
+
+    delay(5);
+
+    for (int j = 0; j < NUM_VIAS; j++) {
+      if (j == i) continue;
+
+      if (digitalRead(vias[j]) == LOW) {
+        Serial.print("Curto entre via ");
+        Serial.print(i);
+        Serial.print(" e via ");
+        Serial.println(j);
+      }
+    }
+  }
+}
+
+//************************************************************************************************************************** */
