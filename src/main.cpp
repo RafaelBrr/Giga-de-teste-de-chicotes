@@ -15,8 +15,8 @@ const int PIN_BTN_UP    = 48;
 const int PIN_BTN_DOWN  = 49;
 
 // --- LEDs indicadores ---
-const int LED_VERDE   = 44;
-const int LED_VERMELHO = 45;
+int LED_VERDE = 44;
+int LED_VERMELHO = 45;
 
 // --- Conectores de teste de cabos ---
 const int txPins[8] = {22, 23, 24, 25, 26, 27, 28, 29}; // Saídas
@@ -25,7 +25,8 @@ const int rxPins[8] = {30, 31, 32, 33, 34, 35, 36, 37}; // Entradas
 // --- Variáveis de controle de menu ---
 int menuIndex = 0;
 const char* menuItems[] = {"Iniciar Teste", "Ver Resultados", "Reset", "Sobre"};
-const int menuSize = sizeof(menuItems) / sizeof(menuItems[0]);
+int menuSize = sizeof(menuItems) / sizeof(menuItems[0]);
+//const int menuSize;
 
 void realizarTeste();
 void mostrarResultados();
@@ -68,6 +69,7 @@ void setup() {
 
 
 void loop() {
+
   drawMenu();
 
   if (btnPressed(PIN_BTN_DOWN)) {
@@ -148,33 +150,8 @@ void realizarTeste() {
   delay(2000);
 }
 
-void mostrarResultados() {
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_6x13_tr);
-  u8g2.drawStr(0, 12, "Resultados via Serial");
-  u8g2.drawStr(0, 24, "Consulte LabVIEW.");
-  u8g2.sendBuffer();
-  delay(2000);
-}
 
-void resetarSistema() {
-  digitalWrite(LED_VERDE, LOW);
-  digitalWrite(LED_VERMELHO, LOW);
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_6x13_tr);
-  u8g2.drawStr(0, 24, "Sistema Resetado");
-  u8g2.sendBuffer();
-  delay(2000);
-}
 
-void mostrarSobre() {
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_6x13_tr);
-  u8g2.drawStr(0, 12, "Jiga de Teste IMBEL");
-  u8g2.drawStr(0, 24, "Versao: 1.0");
-  u8g2.drawStr(0, 36, "Arduino Mega Pro Mini");
-  u8g2.sendBuffer();
-  delay(2500);
-}
+
 
 //*********************************************************************************************************************************************************************** */
