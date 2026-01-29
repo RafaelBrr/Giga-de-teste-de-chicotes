@@ -1,13 +1,16 @@
 #include <Arduino.h>
-#include <U8g2lib.h>
+#include <U8glib.h>
 #include <string.h>
 #include "TesteCAB_2558.h"
 
 //#include "ProgressBar.h"
 
 // --- Display LCD ST7920 (modo SPI via software) ---
-//U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R0, /*clk=*/52, /*data=*/51, /*cs=*/53, /*reset=*/U8X8_PIN_NONE);
+U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET
 //U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);
+
+// Inicialização do display ST7567S em I2C com driver correto
+// U8G2_ST7567_ENH_DG128064I_F_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);// Use standard I2C pins for Arduino Uno(A4-SDA, A5-SCL)
 
 String cableModel = "";
 
@@ -18,7 +21,7 @@ bool res = false; // Resultado do teste de continuidade
 void setup() {
   // Inicializa comunicação
   Serial.begin(9600);
-  u8g2.begin();
+  u8g.begin();
 
   //Configure pin as output
   pinMode(11, OUTPUT); // 
@@ -53,16 +56,14 @@ void setup() {
 
   u8g2.firstPage();
   do {
-    u8g2.setFont(u8g2_font_6x12_tr);
-    u8g2.drawStr(10, 20, "Inicializando Giga de teste...");
-  } while (u8g2.nextPage());
+    u8g.setFont(u8g2_font_6x12_tr);
+    u8g.drawStr(10, 20, "Inicializando Giga de teste...");
+  } while (u8g.nextPage());
 
   Serial.println("Sistem pronto!");
   
 
   }
-
-
 
 void loop() {
 
