@@ -5,9 +5,11 @@
 
 #include "ProgressBar.h"
 #include "menu.h"
+#include "Firmware.h"
 
 // --- Display LCD ST7920 (modo SPI via software) ---
 U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET
+//U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET - Configuração alternativa para casa
 //u8g_SSD1306_128X64_NONAME_F_HW_I2C u8g(u8g_R0);
 
 // Inicialização do display ST7567S em I2C com driver correto
@@ -17,6 +19,7 @@ String cableModel = "";
 
 int tipo = -1; // Tipo de cabo a ser testado
 bool res = false; // Resultado do teste de continuidade
+int percent = 0; // Percentual da barra de progresso
 
 
 
@@ -63,15 +66,25 @@ void setup() {
     u8g.drawStr(10, 20, "Inicializando Giga de teste...");
   } while (u8g.nextPage());
 
-  Serial.println("Sistem pronto!");
-  
+  Serial.println("Sistema pronto!");
+  delay(2000);
+  //drawProgressBar(percent);
 
   }
 
 void loop() {
 
-  drawProgressBar(10, 30, 108, 10, 100);
-  showMenu();
+ 
+
+  // drawProgressBar(percent);
+  // //showMenu();
+  // percent++;
+  // if(percent > 100){
+    showFirmwareInfo();
+  // }
+
+  
+  delay(100);
  
 }
 
