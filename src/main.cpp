@@ -3,19 +3,21 @@
 #include <string.h>
 #include "TesteCAB_2558.h"
 
-//#include "ProgressBar.h"
+#include "ProgressBar.h"
+#include "menu.h"
 
 // --- Display LCD ST7920 (modo SPI via software) ---
 U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET
-//U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);
+//u8g_SSD1306_128X64_NONAME_F_HW_I2C u8g(u8g_R0);
 
 // Inicialização do display ST7567S em I2C com driver correto
-// U8G2_ST7567_ENH_DG128064I_F_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);// Use standard I2C pins for Arduino Uno(A4-SDA, A5-SCL)
+// u8g_ST7567_ENH_DG128064I_F_SW_I2C u8g(u8g_R0, SCL, SDA, U8X8_PIN_NONE);// Use standard I2C pins for Arduino Uno(A4-SDA, A5-SCL)
 
 String cableModel = "";
 
 int tipo = -1; // Tipo de cabo a ser testado
 bool res = false; // Resultado do teste de continuidade
+
 
 
 void setup() {
@@ -54,9 +56,10 @@ void setup() {
 
   //ProgressBar.init();
 
-  u8g2.firstPage();
+  u8g.firstPage();
   do {
-    u8g.setFont(u8g2_font_6x12_tr);
+    u8g.setRot180();
+    u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
     u8g.drawStr(10, 20, "Inicializando Giga de teste...");
   } while (u8g.nextPage());
 
@@ -67,16 +70,24 @@ void setup() {
 
 void loop() {
 
-  if(Serial.available()){
+  drawProgressBar(10, 30, 108, 10, 100);
+  showMenu();
+ 
+}
+
+void Test() {
+  // Implementação da função de teste
+
+    if(Serial.available()){
     cableModel = Serial.readStringUntil('\n');
     Serial.print("Modelo do cabo recebido: ");
     Serial.println(cableModel);
 
-    u8g2.firstPage();
+    u8g.firstPage();
     do {
-      u8g2.setFont(u8g2_font_6x12_tr);
-      u8g2.drawStr(10, 20, cableModel.c_str());
-    } while (u8g2.nextPage());
+      u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
+      u8g.drawStr(10, 20, cableModel.c_str());
+    } while (u8g.nextPage());
 
     if(cableModel.equals("CAB-2558")){
       Serial.println("Iniciando teste do Cabo Tipo 1...");
@@ -106,7 +117,7 @@ void loop() {
   }
 
   }
- 
 }
+
 
 //*********************************************************************************************************************************************************************** */

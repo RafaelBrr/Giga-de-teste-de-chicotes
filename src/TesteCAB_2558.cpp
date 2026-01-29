@@ -1,8 +1,8 @@
 #include <Arduino.h>
-#include "U8g2lib.h"
+#include "U8glib.h"
 #include "TesteCAB_2558.h"
 
-U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R0, /*clk=*/52, /*data=*/51, /*cs=*/53, /*reset=*/U8X8_PIN_NONE);
+extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
 // Pinos de saída (lado A do cabo)
 const int txPins[10] = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
