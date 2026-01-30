@@ -7,6 +7,7 @@
 #include "menu.h"
 #include "Firmware.h"
 #include "Serial.h"
+#include "Bitmap.h"
 
 // --- Display LCD ST7920 (modo SPI via software) ---
 U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET
@@ -90,7 +91,7 @@ if(progressBar == false){
 
 digitalWrite(A0, HIGH); // Turn the LED on (HIGH is the voltage level)
 
-
+drawBitmap();
    
   if(screenFirmware == false){
     showFirmwareInfo();
