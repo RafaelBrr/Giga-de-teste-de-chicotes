@@ -2,7 +2,7 @@
 #include "ProgressBar.h"
 #include "U8glib.h"
 
-#define progressBarPosX 13
+#define progressBarPosX 5
 #define progressBarPosY 50
 
 #define progressBarWidth 101
@@ -39,7 +39,7 @@ u8g.firstPage();
     // Percentage text
     char percentStr[5];
     sprintf(percentStr, "%d%%", value);
-    u8g.drawStr(15, 25, percentStr);
+    u8g.drawStr(112, 58, percentStr);
 
     //u8g.drawStr(13, 40, progressBarMessage);
     u8g.setPrintPos(13, 45);

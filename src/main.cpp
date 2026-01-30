@@ -25,6 +25,7 @@ int percent = 0; // Percentual da barra de progresso
 bool progressBar = false;
 bool screenFirmware = false;
 bool screenSerial = false;
+String lastCommand = "";
 
 void setup() {
   // Inicializa comunicação
@@ -60,7 +61,8 @@ void setup() {
   pinMode(34, INPUT); // 
   pinMode(36, INPUT); // 
 
-  pinMode(A0, OUTPUT); // LED indicador de status
+  pinMode(A0, OUTPUT); // LED gree indicador de status
+  pinMode(A2, OUTPUT); // LED red indicador de status
 
   //ProgressBar.init();
 
@@ -93,14 +95,23 @@ digitalWrite(A0, HIGH); // Turn the LED on (HIGH is the voltage level)
   if(screenFirmware == false){
     showFirmwareInfo();
     screenFirmware = true;
+    initializeSerial();
       
   delay(2000);
  
 }
 
   
-    initializeSerial();
-    readFromSerial();
+    
+    String comand = readFromSerial();
+
+      if(comand.length() > 0 && comand != lastCommand) {
+
+        lastCommand = comand;
+        handleCommand(comand);
+      }
+
+    
   //   String stringReceived = readFromSerial();
   //   if(stringReceived.equals("CAB-2558")){
   //      do {

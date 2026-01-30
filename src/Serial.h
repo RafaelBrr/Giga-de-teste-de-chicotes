@@ -6,6 +6,7 @@
 
 void initializeSerial();
 String readFromSerial();
+void handleCommand(const String &cmd);
 void writeToSerial(const String &message);
 void writeToSerial(const char *message);
 
