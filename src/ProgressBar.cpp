@@ -11,7 +11,7 @@
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
-String progressBarMessage = "Loading system...";
+String progressBarMessage = " ";
 
 void drawProgressBar(int value) {
 
