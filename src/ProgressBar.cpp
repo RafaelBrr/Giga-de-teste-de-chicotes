@@ -11,21 +11,28 @@
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
+String progressBarMessage = "Loading system...";
+
 void drawProgressBar(int value) {
 
   
   int barWidth = map(value, 0, 100, 0, 100);
 
-  u8g.firstPage();
+  
+   do {
+
+u8g.firstPage();
   do {
     //u8g.setFont(u8g_font_6x10);
     u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
     u8g.drawStr(15, 15, "SimpleProgressBar");
     
-    // Outer box
+    // Outer decorative frame
+    u8g.drawFrame(progressBarPosX-3, progressBarPosY-2, progressBarWidth+6, progressBarHeight+4);
+    // Inner decorative frame
     u8g.drawFrame(progressBarPosX, progressBarPosY, progressBarWidth, progressBarHeight);
     //u8g.drawFrame(12, 24, 102, 17);
-    u8g.drawFrame(progressBarPosX-1, progressBarPosY-2, progressBarWidth+4, progressBarHeight+4);
+   
     // Filled bar
     u8g.drawBox(progressBarPosX, progressBarPosY, barWidth, progressBarHeight);
 
@@ -33,7 +40,22 @@ void drawProgressBar(int value) {
     char percentStr[5];
     sprintf(percentStr, "%d%%", value);
     u8g.drawStr(15, 25, percentStr);
+
+    //u8g.drawStr(13, 40, progressBarMessage);
+    u8g.setPrintPos(13, 45);
+    //progressBarMessage = (value < 75)?" Loading system...":"System ready...";
+    //progressBarMessage = (value < 90)?(value < 25)?" Loading system...":"Loading parameters...":"System OK!";
+    progressBarMessage = (value < 90)?(value < 45)?(value < 15)?"Initializing system...":"Loading OS...":"Loading parameters...":"System OK!";
+    u8g.print(progressBarMessage);
     
    
   } while (u8g.nextPage());
+
+delay(10);
+barWidth++;
+value++;
+
+   }while(value <= 100);
+
+  
 }

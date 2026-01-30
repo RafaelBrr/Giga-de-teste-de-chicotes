@@ -6,6 +6,7 @@
 #include "ProgressBar.h"
 #include "menu.h"
 #include "Firmware.h"
+#include "Serial.h"
 
 // --- Display LCD ST7920 (modo SPI via software) ---
 U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET
@@ -21,7 +22,9 @@ int tipo = -1; // Tipo de cabo a ser testado
 bool res = false; // Resultado do teste de continuidade
 int percent = 0; // Percentual da barra de progresso
 
-
+bool progressBar = false;
+bool screenFirmware = false;
+bool screenSerial = false;
 
 void setup() {
   // Inicializa comunicação
@@ -57,6 +60,8 @@ void setup() {
   pinMode(34, INPUT); // 
   pinMode(36, INPUT); // 
 
+  pinMode(A0, OUTPUT); // LED indicador de status
+
   //ProgressBar.init();
 
   u8g.firstPage();
@@ -67,7 +72,7 @@ void setup() {
   } while (u8g.nextPage());
 
   Serial.println("Sistema pronto!");
-  delay(2000);
+  delay(200);
   //drawProgressBar(percent);
 
   }
@@ -75,18 +80,45 @@ void setup() {
 void loop() {
 
  
+if(progressBar == false){
+  drawProgressBar(percent);
+  progressBar = true;
+  percent = 0;
+}
 
-  // drawProgressBar(percent);
-  // //showMenu();
-  // percent++;
-  // if(percent > 100){
+digitalWrite(A0, HIGH); // Turn the LED on (HIGH is the voltage level)
+
+
+   
+  if(screenFirmware == false){
     showFirmwareInfo();
-  // }
-
-  
-  delay(100);
+    screenFirmware = true;
+      
+  delay(2000);
  
 }
+
+  
+    initializeSerial();
+    readFromSerial();
+  //   String stringReceived = readFromSerial();
+  //   if(stringReceived.equals("CAB-2558")){
+  //      do {
+  //   u8g.drawStr(10, 20, "Comando recebido: CAB-2558");
+
+  // } while (u8g.nextPage());
+      
+
+  //   }
+      
+  
+ 
+}
+
+//showMenu();
+
+
+
 
 void Test() {
   // Implementação da função de teste
