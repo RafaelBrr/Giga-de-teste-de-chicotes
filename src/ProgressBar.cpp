@@ -25,7 +25,7 @@ u8g.firstPage();
   do {
     //u8g.setFont(u8g_font_6x10);
     u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
-    u8g.drawStr(15, 15, "SimpleProgressBar");
+    u8g.drawStr(15, 15, "Iniciando Giga");
     
     // Outer decorative frame
     u8g.drawFrame(progressBarPosX-3, progressBarPosY-2, progressBarWidth+6, progressBarHeight+4);
@@ -45,7 +45,7 @@ u8g.firstPage();
     u8g.setPrintPos(13, 45);
     //progressBarMessage = (value < 75)?" Loading system...":"System ready...";
     //progressBarMessage = (value < 90)?(value < 25)?" Loading system...":"Loading parameters...":"System OK!";
-    progressBarMessage = (value < 90)?(value < 45)?(value < 15)?"Initializing system...":"Loading OS...":"Loading parameters...":"System OK!";
+    progressBarMessage = (value < 90)?(value < 45)?(value < 15)?"Initializing system...":"Loading System...":"Loading parameters...":"System OK!";
     u8g.print(progressBarMessage);
     
    
