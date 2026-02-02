@@ -7,6 +7,7 @@
 #include "menu.h"
 #include "Firmware.h"
 #include "Serial.h"
+#include "Buttons.h"
 
 // --- Display LCD ST7920 (modo SPI via software) ---
 U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET
@@ -44,11 +45,10 @@ void setup() {
   pinMode(27, OUTPUT); // 
 
   //Configure pin buttons
-  pinMode(47, INPUT); // 
-  pinMode(48, INPUT); // 
-  pinMode(50, INPUT); // 
-  pinMode(52, INPUT); // 
-
+  pinMode(47, INPUT_PULLUP); // 
+  pinMode(48, INPUT_PULLUP); // 
+  pinMode(50, INPUT_PULLUP); // 
+  pinMode(52, INPUT_PULLUP); // 
 
   //Configure pin as input
   pinMode(A4, INPUT); // 
@@ -74,6 +74,7 @@ void setup() {
   } while (u8g.nextPage());
 
   Serial.println("Sistema pronto!");
+  menuInit();
   delay(200);
   //drawProgressBar(percent);
 
@@ -95,21 +96,26 @@ digitalWrite(A0, HIGH); // Turn the LED on (HIGH is the voltage level)
   if(screenFirmware == false){
     showFirmwareInfo();
     screenFirmware = true;
-    initializeSerial();
+   // initializeSerial();
       
   delay(2000);
  
 }
 
-  
+  // isButtonPressed(47); // Check if button on pin 47 is pressed
+  // isButtonPressed(48); // Check if button on pin 48 is pressed
+  // isButtonPressed(50); // Check if button on pin 50 is pressed
+  // isButtonPressed(52); // Check if button on pin 52 is pressed
+
+  menuLoop();
     
-    String comand = readFromSerial();
+    // String comand = readFromSerial();
 
-      if(comand.length() > 0 && comand != lastCommand) {
+    //   if(comand.length() > 0 && comand != lastCommand) {
 
-        lastCommand = comand;
-        handleCommand(comand);
-      }
+    //     lastCommand = comand;
+    //     handleCommand(comand);
+    //   }
 
     
   //   String stringReceived = readFromSerial();
