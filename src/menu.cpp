@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <U8glib.h>
+#include "Firmware.h"
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
@@ -13,10 +14,13 @@ extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 #define BTN_BACK   47
 
 /* =====================================================
-   MENU - ESTRUTURA
+   LIMITES
    ===================================================== */
 #define MAX_LEVELS 4
 
+/* =====================================================
+   ESTRUTURA DO MENU
+   ===================================================== */
 struct MenuItem {
   const char* label;
   MenuItem* children;
@@ -25,30 +29,35 @@ struct MenuItem {
 };
 
 /* =====================================================
-   VARIAVEIS DE CONTROLE
+   STACK DE NAVEGACAO
    ===================================================== */
 static MenuItem* menuStack[MAX_LEVELS];
-static uint8_t indexStack[MAX_LEVELS];
-
-static uint8_t currentLevel = 0;
-static MenuItem* currentMenu;
-static uint8_t currentIndex = 0;
+static uint8_t   indexStack[MAX_LEVELS];
+static uint8_t   countStack[MAX_LEVELS];
 
 /* =====================================================
-   FUNCOES DE ACAO (STUBS)
+   ESTADO ATUAL
+   ===================================================== */
+static MenuItem* currentMenu;
+static uint8_t   currentIndex = 0;
+static uint8_t   currentCount = 0;
+static uint8_t   currentLevel = 0;
+
+/* =====================================================
+   ACOES (stubs)
    ===================================================== */
 static void actionBrightness() {}
 static void actionContrast() {}
-static void actionInfo() {}
+static void actionInfo() { showFirmwareInfo();} /* Example action */ 
 static void actionReset() {}
-static void actionLedTest() {}
+static void actionLedTest() {digitalWrite(A2, HIGH); }
 static void actionBuzzerTest() {}
 
 /* =====================================================
    DEFINICAO DOS MENUS (4 NIVEIS)
    ===================================================== */
 
-// ----- NIVEL 4 -----
+// ---- NIVEL 4 ----
 static MenuItem menuDisplay[] = {
   { "Brilho",    NULL, 0, actionBrightness },
   { "Contraste", NULL, 0, actionContrast }
@@ -59,7 +68,7 @@ static MenuItem menuSystem[] = {
   { "Reset", NULL, 0, actionReset }
 };
 
-// ----- NIVEL 3 -----
+// ---- NIVEL 3 ----
 static MenuItem menuConfig[] = {
   { "Display", menuDisplay, 2, NULL },
   { "Sistema", menuSystem,  2, NULL }
@@ -70,11 +79,12 @@ static MenuItem menuTests[] = {
   { "Buzzer", NULL, 0, actionBuzzerTest }
 };
 
-// ----- NIVEL 2 / RAIZ -----
+// ---- NIVEL 2 (RAIZ) ----
 static MenuItem menuMain[] = {
   { "Config", menuConfig, 2, NULL },
   { "Testes", menuTests,  2, NULL },
-  { "Sobre",  NULL,       0, actionInfo }
+  { "Sobre",  NULL,       0, actionInfo },
+  { "Test",  NULL,       0, actionLedTest },
 };
 
 /* =====================================================
@@ -91,7 +101,7 @@ static bool pressed(uint8_t pin) {
 static void drawMenu() {
   u8g.setFont(u8g_font_6x10);
 
-  for (uint8_t i = 0; i < currentMenu->childCount; i++) {
+  for (uint8_t i = 0; i < currentCount; i++) {
     int y = 14 + i * 12;
 
     if (i == currentIndex) {
@@ -106,7 +116,7 @@ static void drawMenu() {
 }
 
 /* =====================================================
-   API PUBLICA DO MENU
+   API PUBLICA
    ===================================================== */
 void menuInit() {
   pinMode(BTN_UP,   INPUT_PULLUP);
@@ -115,26 +125,34 @@ void menuInit() {
   pinMode(BTN_BACK, INPUT_PULLUP);
 
   currentMenu  = menuMain;
+  currentCount = 4;   // Config, Testes, Sobre
   currentIndex = 0;
   currentLevel = 0;
 }
 
 void menuLoop() {
 
+  /* -------- NAVEGACAO -------- */
   if (pressed(BTN_UP) && currentIndex > 0)
     currentIndex--;
 
-  if (pressed(BTN_DOWN) && currentIndex < currentMenu->childCount - 1)
+  if (pressed(BTN_DOWN) && currentIndex < currentCount - 1)
     currentIndex++;
 
+  /* -------- ENTER -------- */
   if (pressed(BTN_OK)) {
     MenuItem& item = currentMenu[currentIndex];
 
     if (item.children && currentLevel < MAX_LEVELS - 1) {
+
       menuStack[currentLevel]  = currentMenu;
       indexStack[currentLevel] = currentIndex;
+      countStack[currentLevel] = currentCount;
+
       currentLevel++;
+
       currentMenu  = item.children;
+      currentCount = item.childCount;
       currentIndex = 0;
     }
     else if (item.action) {
@@ -142,12 +160,17 @@ void menuLoop() {
     }
   }
 
+  /* -------- BACK -------- */
   if (pressed(BTN_BACK) && currentLevel > 0) {
+
     currentLevel--;
+
     currentMenu  = menuStack[currentLevel];
     currentIndex = indexStack[currentLevel];
+    currentCount = countStack[currentLevel];
   }
 
+  /* -------- DESENHO -------- */
   u8g.firstPage();
   do {
     drawMenu();
