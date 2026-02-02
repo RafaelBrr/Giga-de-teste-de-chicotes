@@ -10,8 +10,9 @@
 #include "Buttons.h"
 
 // --- Display LCD ST7920 (modo SPI via software) ---
-U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET
+U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET - Config for IMBEL projects
 //U8GLIB_ST7920_128X64_1X u8g(7, 4, 2 ,8); //Enable, RW, RS, RESET - Configuração alternativa para casa
+//U8GLIB_ST7920_128X64_1X u8g(6, 5, 4 ,7); //Enable, RW, RS, RESET
 //u8g_SSD1306_128X64_NONAME_F_HW_I2C u8g(u8g_R0);
 
 // Inicialização do display ST7567S em I2C com driver correto

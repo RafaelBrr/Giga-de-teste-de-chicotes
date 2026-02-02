@@ -25,7 +25,7 @@ u8g.firstPage();
   do {
     //u8g.setFont(u8g_font_6x10);
     u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
-    u8g.drawStr(15, 15, "SimpleProgressBar");
+    u8g.drawStr(15, 15, "Giga IMBEL");
     
     // Outer decorative frame
     u8g.drawFrame(progressBarPosX-3, progressBarPosY-2, progressBarWidth+6, progressBarHeight+4);

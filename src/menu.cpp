@@ -52,6 +52,7 @@ static void actionInfo() { showFirmwareInfo();} /* Example action */
 static void actionReset() {}
 static void actionLedTest() {digitalWrite(A2, HIGH); }
 static void actionBuzzerTest() {}
+static void actionMotorTest() {digitalWrite(A0, LOW); }
 
 /* =====================================================
    DEFINICAO DOS MENUS (4 NIVEIS)
@@ -76,13 +77,14 @@ static MenuItem menuConfig[] = {
 
 static MenuItem menuTests[] = {
   { "LED",    NULL, 0, actionLedTest },
-  { "Buzzer", NULL, 0, actionBuzzerTest }
+  { "Buzzer", NULL, 0, actionBuzzerTest },
+  { "Motor",  NULL,       0, actionMotorTest},
 };
 
 // ---- NIVEL 2 (RAIZ) ----
 static MenuItem menuMain[] = {
   { "Config", menuConfig, 2, NULL },
-  { "Testes", menuTests,  2, NULL },
+  { "Testes", menuTests,  3, NULL },
   { "Sobre",  NULL,       0, actionInfo },
   { "Test",  NULL,       0, actionLedTest },
 };
