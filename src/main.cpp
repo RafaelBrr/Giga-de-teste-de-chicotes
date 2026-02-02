@@ -54,10 +54,10 @@ void setup() {
   //Configure pin as input
   pinMode(A4, INPUT); // 
   pinMode(A6, INPUT); // 
-  pinMode(A8, INPUT); // 
-  pinMode(A10, INPUT); // 
-  pinMode(A12, INPUT); // 
-  pinMode(A14, INPUT); // 
+  // pinMode(A8, INPUT); // 
+  // pinMode(A10, INPUT); // 
+  // pinMode(A12, INPUT); // 
+  // pinMode(A14, INPUT); // 
   pinMode(32, INPUT); // 
   pinMode(34, INPUT); // 
   pinMode(36, INPUT); // 

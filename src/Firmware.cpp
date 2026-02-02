@@ -40,5 +40,5 @@ void showFirmwareInfo() {
     u8g.println(FIRMWARE_DATE);
 
     } while (u8g.nextPage());
-    
+    delay(2000);
 }
