@@ -50,7 +50,7 @@ static uint8_t   currentCount = 0;
 static uint8_t   currentLevel = 0;
 
 /* =====================================================
-   FLAGS DE COMANDO SERIAL (SIMULAM BOTOES)
+   FLAGS SERIAL (SIMULAM BOTOES)
    ===================================================== */
 static bool serialUp   = false;
 static bool serialDown = false;
@@ -66,7 +66,7 @@ static void actionBlinkTest()  { Serial.println("BLINK");   }
 static void actionInfo()       { Serial.println("INFO");    }
 
 /* =====================================================
-   DEFINICAO DOS MENUS
+   MENUS
    ===================================================== */
 static MenuItem menuTests[] = {
   { "LED ON",  NULL, 0, actionLedTestOn  },
@@ -91,7 +91,26 @@ static bool pressed(uint8_t pin) {
 }
 
 /* =====================================================
-   SERIAL / LABVIEW (COMANDOS ASCII)
+   FUNCOES AUXILIARES (COMANDOS DIRETOS)
+   ===================================================== */
+static MenuItem* findItemByName(MenuItem* menu, uint8_t count, const char* name) {
+  for (uint8_t i = 0; i < count; i++) {
+    if (strcasecmp(menu[i].label, name) == 0) {
+      return &menu[i];
+    }
+  }
+  return NULL;
+}
+
+static void gotoMenu(MenuItem* menu, uint8_t count) {
+  currentMenu  = menu;
+  currentCount = count;
+  currentIndex = 0;
+  currentLevel = 0;
+}
+
+/* =====================================================
+   SERIAL / LABVIEW
    ===================================================== */
 static void handleSerial() {
   if (!Serial.available())
@@ -101,33 +120,54 @@ static void handleSerial() {
   cmd.trim();
   cmd.toUpperCase();
 
-  if (cmd == "UP") {
-    serialUp = true;
-    Serial.println("ACK UP");
-  }
-  else if (cmd == "DOWN") {
-    serialDown = true;
-    Serial.println("ACK DOWN");
-  }
-  else if (cmd == "OK") {
-    serialOk = true;
-    Serial.println("ACK OK");
-  }
-  else if (cmd == "BACK") {
-    serialBack = true;
-    Serial.println("ACK BACK");
-  }
-  else if (cmd == "STATUS") {
+  /* ----- NAVEGACAO ----- */
+  if (cmd == "UP")   { serialUp = true;   Serial.println("ACK UP");   return; }
+  if (cmd == "DOWN") { serialDown = true; Serial.println("ACK DOWN"); return; }
+  if (cmd == "OK")   { serialOk = true;   Serial.println("ACK OK");   return; }
+  if (cmd == "BACK") { serialBack = true; Serial.println("ACK BACK"); return; }
+
+  /* ----- STATUS ----- */
+  if (cmd == "STATUS") {
     Serial.print("LEVEL=");
     Serial.print(currentLevel);
     Serial.print(";INDEX=");
     Serial.print(currentIndex);
     Serial.print(";COUNT=");
     Serial.println(currentCount);
+    return;
   }
-  else {
-    Serial.println("ERR UNKNOWN");
+
+  /* ----- GOTO ----- */
+  if (cmd == "GOTO MAIN") {
+    gotoMenu(menuMain, 2);
+    Serial.println("ACK GOTO MAIN");
+    return;
   }
+
+  if (cmd == "GOTO TESTES") {
+    gotoMenu(menuTests, 3);
+    Serial.println("ACK GOTO TESTES");
+    return;
+  }
+
+  /* ----- RUN (EXECUCAO DIRETA) ----- */
+  if (cmd.startsWith("RUN ")) {
+    String itemName = cmd.substring(4);
+    itemName.trim();
+
+    MenuItem* item = findItemByName(menuTests, 3, itemName.c_str());
+
+    if (item && item->action) {
+      item->action();
+      Serial.print("ACK RUN ");
+      Serial.println(itemName);
+    } else {
+      Serial.println("ERR ITEM NOT FOUND");
+    }
+    return;
+  }
+
+  Serial.println("ERR UNKNOWN");
 }
 
 /* =====================================================
@@ -161,7 +201,9 @@ void menuInit() {
 
   Serial.begin(9600);
   Serial.println("MENU READY");
-  Serial.println("Commands: UP, DOWN, OK, BACK, STATUS");
+  Serial.println("CMD: UP DOWN OK BACK STATUS");
+  Serial.println("CMD: GOTO MAIN | GOTO TESTES");
+  Serial.println("CMD: RUN LED ON | RUN LED OFF | RUN BLINK");
 
   currentMenu  = menuMain;
   currentCount = 2;
@@ -171,10 +213,10 @@ void menuInit() {
 
 void menuLoop() {
 
-  /* -------- SERIAL -------- */
+  /* ----- SERIAL ----- */
   handleSerial();
 
-  /* -------- EVENTOS (BOTOES + SERIAL) -------- */
+  /* ----- EVENTOS (BOTOES + SERIAL) ----- */
   bool up   = pressed(BTN_UP)   || serialUp;
   bool down = pressed(BTN_DOWN) || serialDown;
   bool ok   = pressed(BTN_OK)   || serialOk;
@@ -182,14 +224,14 @@ void menuLoop() {
 
   serialUp = serialDown = serialOk = serialBack = false;
 
-  /* -------- NAVEGACAO -------- */
+  /* ----- NAVEGACAO ----- */
   if (up && currentIndex > 0)
     currentIndex--;
 
   if (down && currentIndex < currentCount - 1)
     currentIndex++;
 
-  /* -------- ENTER -------- */
+  /* ----- ENTER ----- */
   if (ok) {
     MenuItem& item = currentMenu[currentIndex];
 
@@ -208,7 +250,7 @@ void menuLoop() {
     }
   }
 
-  /* -------- BACK -------- */
+  /* ----- BACK ----- */
   if (back && currentLevel > 0) {
     currentLevel--;
     currentMenu  = menuStack[currentLevel];
@@ -216,7 +258,7 @@ void menuLoop() {
     currentCount = countStack[currentLevel];
   }
 
-  /* -------- DISPLAY -------- */
+  /* ----- DISPLAY ----- */
   u8g.firstPage();
   do {
     drawMenu();
