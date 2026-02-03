@@ -45,7 +45,8 @@ u8g.firstPage();
     u8g.setPrintPos(13, 45);
     //progressBarMessage = (value < 75)?" Loading system...":"System ready...";
     //progressBarMessage = (value < 90)?(value < 25)?" Loading system...":"Loading parameters...":"System OK!";
-    progressBarMessage = (value < 90)?(value < 45)?(value < 15)?"Initializing system...":"Loading OS...":"Loading parameters...":"System OK!";
+    //progressBarMessage = (value < 90)?(value < 65)?(value < 15)?"Initializing system...":"Loading OS...":"Loading parameters...":"System OK!";
+    progressBarMessage = (value < 90)?(value < 65)?(value < 55)?(value < 45)?(value < 40)?(value < 35)?(value < 30)?(value < 25)?(value < 20)?(value < 15)?"Initializing system...":"Loading OS ":"Loading OS.":"Loading OS..":"Loading OS...":"Loading OS":"Loading OS.":"Loading OS..":"Loading OS...":"Loading parameters...":"System OK!";
     u8g.print(progressBarMessage);
     
    

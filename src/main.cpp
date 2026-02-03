@@ -35,7 +35,7 @@ void setup() {
   u8g.begin();
 
   //Configure pin as output
-  pinMode(11, OUTPUT); // 
+  pinMode(11, OUTPUT); // j
   pinMode(13, OUTPUT); // 
   pinMode(15, OUTPUT); // 
   pinMode(17, OUTPUT); // 

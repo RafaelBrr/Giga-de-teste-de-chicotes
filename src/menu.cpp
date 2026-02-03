@@ -48,16 +48,14 @@ static uint8_t   currentLevel = 0;
    ===================================================== */
 static void actionBrightness() {}
 static void actionContrast() {}
-static void actionInfo() { showFirmwareInfo();} /* Example action */ 
+static void actionInfo() {}
 static void actionReset() {}
-static void actionLedTest() {digitalWrite(A2, HIGH); }
-static void actionBuzzerTest() {}
-static void actionMotorTest() {digitalWrite(A0, LOW); }
+static void actionLedTest() {digitalWrite(A2, HIGH);}
+static void actionBlinkTest() {for(int i = 0; i <= 10; i++){digitalWrite(A2, LOW);delay(500);digitalWrite(A2, HIGH);delay(500);}}
 
 /* =====================================================
    DEFINICAO DOS MENUS (4 NIVEIS)
    ===================================================== */
-
 // ---- NIVEL 4 ----
 static MenuItem menuDisplay[] = {
   { "Brilho",    NULL, 0, actionBrightness },
@@ -77,29 +75,102 @@ static MenuItem menuConfig[] = {
 
 static MenuItem menuTests[] = {
   { "LED",    NULL, 0, actionLedTest },
-  { "Buzzer", NULL, 0, actionBuzzerTest },
-  { "Motor",  NULL,       0, actionMotorTest},
+  { "Blink", NULL, 0, actionBlinkTest }
 };
 
 // ---- NIVEL 2 (RAIZ) ----
 static MenuItem menuMain[] = {
   { "Config", menuConfig, 2, NULL },
-  { "Testes", menuTests,  3, NULL },
-  { "Sobre",  NULL,       0, actionInfo },
-  { "Test",  NULL,       0, actionLedTest },
+  { "Testes", menuTests,  2, NULL },
+  { "Sobre",  NULL,       0, actionInfo }
 };
 
 /* =====================================================
-   FUNCOES INTERNAS
+   LEITURA BOTAO (DEBOUNCE SIMPLES)
    ===================================================== */
 static bool pressed(uint8_t pin) {
   if (digitalRead(pin) == LOW) {
-    delay(150);   // debounce simples
+    delay(150);
     return true;
   }
   return false;
 }
 
+/* =====================================================
+   SERIAL -> SIMULACAO DE "CLIQUE" (NOVO)
+   ===================================================== */
+static bool serialUp = false;
+static bool serialDown = false;
+static bool serialOk = false;
+static bool serialBack = false;
+
+static char serialBuf[32];
+static uint8_t serialPos = 0;
+
+static void serialTrigger(const char* cmd) {
+  // Comandos aceitos (case-insensitive):
+  // UP/U, DOWN/D, OK/O, BACK/B, STATUS
+  if (!cmd || !cmd[0]) return;
+
+  // normaliza para maiúsculo sem usar String (mais leve)
+  char c0 = cmd[0];
+  char c1 = cmd[1];
+
+  // UP
+  if ((c0=='U' || c0=='u') && (c1=='P' || c1=='p' || c1=='\0')) { serialUp = true; return; }
+  // DOWN
+  if ((c0=='D' || c0=='d') && ( (c1=='O'||c1=='o') || (c1=='\0') )) { // aceita "D" e "DO..." (tratamos melhor abaixo)
+    // Se for "DOWN"
+    if (cmd[1] == '\0') { serialDown = true; return; }
+    // Checagem simples para "DOWN"
+    if ((cmd[0]=='D'||cmd[0]=='d') && (cmd[1]=='O'||cmd[1]=='o')) { serialDown = true; return; }
+  }
+  // OK/O
+  if ((c0=='O' || c0=='o') && ( (c1=='K'||c1=='k') || c1=='\0' )) { serialOk = true; return; }
+  // BACK/B
+  if ((c0=='B' || c0=='b') && ( (c1=='A'||c1=='a') || c1=='\0' )) { serialBack = true; return; }
+
+  // STATUS (opcional)
+  if ((cmd[0]=='S'||cmd[0]=='s')) {
+    Serial.print("LEVEL=");
+    Serial.print(currentLevel);
+    Serial.print(" INDEX=");
+    Serial.print(currentIndex);
+    Serial.print(" COUNT=");
+    Serial.println(currentCount);
+  }
+}
+
+static void handleSerial() {
+  while (Serial.available() > 0) {
+    char ch = (char)Serial.read();
+
+    // ignora CR
+    if (ch == '\r') continue;
+
+    // fim de linha -> processa comando
+    if (ch == '\n') {
+      serialBuf[serialPos] = '\0';
+      serialTrigger(serialBuf);
+      serialPos = 0;
+      continue;
+    }
+
+    // armazena até encher
+    if (serialPos < sizeof(serialBuf) - 1) {
+      // converte para maiúsculo para facilitar (opcional)
+      if (ch >= 'a' && ch <= 'z') ch = ch - 32;
+      serialBuf[serialPos++] = ch;
+    } else {
+      // overflow: zera buffer para evitar lixo
+      serialPos = 0;
+    }
+  }
+}
+
+/* =====================================================
+   DESENHO DO MENU
+   ===================================================== */
 static void drawMenu() {
   u8g.setFont(u8g_font_6x10);
 
@@ -126,23 +197,38 @@ void menuInit() {
   pinMode(BTN_OK,   INPUT_PULLUP);
   pinMode(BTN_BACK, INPUT_PULLUP);
 
+  Serial.begin(9600);
+  Serial.println("Menu ready. Commands: UP/DOWN/OK/BACK (or U/D/O/B).");
+
   currentMenu  = menuMain;
-  currentCount = 4;   // Config, Testes, Sobre
+  currentCount = 3;   // Config, Testes, Sobre
   currentIndex = 0;
   currentLevel = 0;
 }
 
 void menuLoop() {
 
+  // NOVO: lê comandos seriais (não bloqueante)
+  handleSerial();
+
+  // Combina botões físicos + "botões virtuais" pela Serial
+  bool up   = pressed(BTN_UP)   || serialUp;
+  bool down = pressed(BTN_DOWN) || serialDown;
+  bool ok   = pressed(BTN_OK)   || serialOk;
+  bool back = pressed(BTN_BACK) || serialBack;
+
+  // Consome os eventos seriais (1 comando = 1 clique)
+  serialUp = serialDown = serialOk = serialBack = false;
+
   /* -------- NAVEGACAO -------- */
-  if (pressed(BTN_UP) && currentIndex > 0)
+  if (up && currentIndex > 0)
     currentIndex--;
 
-  if (pressed(BTN_DOWN) && currentIndex < currentCount - 1)
+  if (down && currentIndex < currentCount - 1)
     currentIndex++;
 
   /* -------- ENTER -------- */
-  if (pressed(BTN_OK)) {
+  if (ok) {
     MenuItem& item = currentMenu[currentIndex];
 
     if (item.children && currentLevel < MAX_LEVELS - 1) {
@@ -163,7 +249,7 @@ void menuLoop() {
   }
 
   /* -------- BACK -------- */
-  if (pressed(BTN_BACK) && currentLevel > 0) {
+  if (back && currentLevel > 0) {
 
     currentLevel--;
 
@@ -178,3 +264,5 @@ void menuLoop() {
     drawMenu();
   } while (u8g.nextPage());
 }
+//********************************************************************************************************************************** */
+//********************************************************************************************************************************** */
