@@ -6,6 +6,10 @@ extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
 #define COUNT_OF(x) (sizeof(x) / sizeof(x[0]))
 
+/* =====================================================
+   BRANCH TESTMENULABVIEW
+   ===================================================== */
+
 
 /* =====================================================
    BOTOES
@@ -46,57 +50,37 @@ static uint8_t   currentCount = 0;
 static uint8_t   currentLevel = 0;
 
 /* =====================================================
-   ACOES (stubs)
+   FLAGS DE COMANDO SERIAL (SIMULAM BOTOES)
    ===================================================== */
-static void actionBrightness() {}
-static void actionContrast() {}
-static void actionInfo() {}
-static void actionReset() {}
-//static void actionLedTest() {digitalWrite(A2, HIGH);}
-static void actionLedRedOn() {digitalWrite(A2, HIGH);}
-static void actionLedRedOff() {digitalWrite(A2, LOW);}
-static void actionLedGreenOn() {digitalWrite(A0, HIGH);}
-static void actionLedGreenOff() {digitalWrite(A0, LOW);}
-static void actionBlinkTest() {for(int i = 0; i <= 20; i++){digitalWrite(A2, HIGH);digitalWrite(A0, LOW);delay(500);digitalWrite(A2, LOW);delay(500);digitalWrite(A0, HIGH);delay(500);}}
+static bool serialUp   = false;
+static bool serialDown = false;
+static bool serialOk   = false;
+static bool serialBack = false;
 
 /* =====================================================
-   DEFINICAO DOS MENUS (4 NIVEIS)
+   ACOES (EXEMPLOS)
    ===================================================== */
-// ---- NIVEL 4 ----
-static MenuItem menuDisplay[] = {
-  { "Brilho",    NULL, 0, actionBrightness },
-  { "Contraste", NULL, 0, actionContrast }
-};
+static void actionLedTestOn()  { Serial.println("LED ON");  }
+static void actionLedTestOff() { Serial.println("LED OFF"); }
+static void actionBlinkTest()  { Serial.println("BLINK");   }
+static void actionInfo()       { Serial.println("INFO");    }
 
-static MenuItem menuSystem[] = {
-  { "Info",  NULL, 0, actionInfo },
-  { "Reset", NULL, 0, actionReset }
-};
-
-// ---- NIVEL 3 ----
-static MenuItem menuConfig[] = {
-  { "Display", menuDisplay, 2, NULL },
-  { "Sistema", menuSystem,  2, NULL }
-};
-
+/* =====================================================
+   DEFINICAO DOS MENUS
+   ===================================================== */
 static MenuItem menuTests[] = {
-  { "LED VERMELHO ON",    NULL, 0, actionLedRedOn },
-  { "LED VERMELHO OFF",    NULL, 0, actionLedRedOff },
-  { "LED VERDE ON",    NULL, 0, actionLedGreenOn },
-  { "LED VERDE OFF",    NULL, 0, actionLedGreenOff },
-  { "Blink", NULL, 0, actionBlinkTest }
+  { "LED ON",  NULL, 0, actionLedTestOn  },
+  { "LED OFF", NULL, 0, actionLedTestOff },
+  { "BLINK",   NULL, 0, actionBlinkTest  }
 };
 
-// ---- NIVEL 2 (RAIZ) ----
 static MenuItem menuMain[] = {
-  { "Config", menuConfig, COUNT_OF(menuConfig), NULL },
-  { "Testes", menuTests,  COUNT_OF(menuTests),  NULL },
-  { "Sobre",  NULL,       0, actionInfo }
+  { "TESTES", menuTests, 3, NULL },
+  { "SOBRE",  NULL,      0, actionInfo }
 };
-
 
 /* =====================================================
-   LEITURA BOTAO (DEBOUNCE SIMPLES)
+   LEITURA DE BOTAO (DEBOUNCE SIMPLES)
    ===================================================== */
 static bool pressed(uint8_t pin) {
   if (digitalRead(pin) == LOW) {
@@ -107,74 +91,42 @@ static bool pressed(uint8_t pin) {
 }
 
 /* =====================================================
-   SERIAL -> SIMULACAO DE "CLIQUE" (NOVO)
+   SERIAL / LABVIEW (COMANDOS ASCII)
    ===================================================== */
-static bool serialUp = false;
-static bool serialDown = false;
-static bool serialOk = false;
-static bool serialBack = false;
+static void handleSerial() {
+  if (!Serial.available())
+    return;
 
-static char serialBuf[32];
-static uint8_t serialPos = 0;
+  String cmd = Serial.readStringUntil('\n');
+  cmd.trim();
+  cmd.toUpperCase();
 
-static void serialTrigger(const char* cmd) {
-  // Comandos aceitos (case-insensitive):
-  // UP/U, DOWN/D, OK/O, BACK/B, STATUS
-  if (!cmd || !cmd[0]) return;
-
-  // normaliza para maiúsculo sem usar String (mais leve)
-  char c0 = cmd[0];
-  char c1 = cmd[1];
-
-  // UP
-  if ((c0=='U' || c0=='u') && (c1=='P' || c1=='p' || c1=='\0')) { serialUp = true; return; }
-  // DOWN
-  if ((c0=='D' || c0=='d') && ( (c1=='O'||c1=='o') || (c1=='\0') )) { // aceita "D" e "DO..." (tratamos melhor abaixo)
-    // Se for "DOWN"
-    if (cmd[1] == '\0') { serialDown = true; return; }
-    // Checagem simples para "DOWN"
-    if ((cmd[0]=='D'||cmd[0]=='d') && (cmd[1]=='O'||cmd[1]=='o')) { serialDown = true; return; }
+  if (cmd == "UP") {
+    serialUp = true;
+    Serial.println("ACK UP");
   }
-  // OK/O
-  if ((c0=='O' || c0=='o') && ( (c1=='K'||c1=='k') || c1=='\0' )) { serialOk = true; return; }
-  // BACK/B
-  if ((c0=='B' || c0=='b') && ( (c1=='A'||c1=='a') || c1=='\0' )) { serialBack = true; return; }
-
-  // STATUS (opcional)
-  if ((cmd[0]=='S'||cmd[0]=='s')) {
+  else if (cmd == "DOWN") {
+    serialDown = true;
+    Serial.println("ACK DOWN");
+  }
+  else if (cmd == "OK") {
+    serialOk = true;
+    Serial.println("ACK OK");
+  }
+  else if (cmd == "BACK") {
+    serialBack = true;
+    Serial.println("ACK BACK");
+  }
+  else if (cmd == "STATUS") {
     Serial.print("LEVEL=");
     Serial.print(currentLevel);
-    Serial.print(" INDEX=");
+    Serial.print(";INDEX=");
     Serial.print(currentIndex);
-    Serial.print(" COUNT=");
+    Serial.print(";COUNT=");
     Serial.println(currentCount);
   }
-}
-
-static void handleSerial() {
-  while (Serial.available() > 0) {
-    char ch = (char)Serial.read();
-
-    // ignora CR
-    if (ch == '\r') continue;
-
-    // fim de linha -> processa comando
-    if (ch == '\n') {
-      serialBuf[serialPos] = '\0';
-      serialTrigger(serialBuf);
-      serialPos = 0;
-      continue;
-    }
-
-    // armazena até encher
-    if (serialPos < sizeof(serialBuf) - 1) {
-      // converte para maiúsculo para facilitar (opcional)
-      if (ch >= 'a' && ch <= 'z') ch = ch - 32;
-      serialBuf[serialPos++] = ch;
-    } else {
-      // overflow: zera buffer para evitar lixo
-      serialPos = 0;
-    }
+  else {
+    Serial.println("ERR UNKNOWN");
   }
 }
 
@@ -208,26 +160,26 @@ void menuInit() {
   pinMode(BTN_BACK, INPUT_PULLUP);
 
   Serial.begin(9600);
-  Serial.println("Menu ready. Commands: UP/DOWN/OK/BACK (or U/D/O/B).");
+  Serial.println("MENU READY");
+  Serial.println("Commands: UP, DOWN, OK, BACK, STATUS");
 
   currentMenu  = menuMain;
-  currentCount = 3;   // Config, Testes, Sobre
+  currentCount = 2;
   currentIndex = 0;
   currentLevel = 0;
 }
 
 void menuLoop() {
 
-  // NOVO: lê comandos seriais (não bloqueante)
+  /* -------- SERIAL -------- */
   handleSerial();
 
-  // Combina botões físicos + "botões virtuais" pela Serial
+  /* -------- EVENTOS (BOTOES + SERIAL) -------- */
   bool up   = pressed(BTN_UP)   || serialUp;
   bool down = pressed(BTN_DOWN) || serialDown;
   bool ok   = pressed(BTN_OK)   || serialOk;
   bool back = pressed(BTN_BACK) || serialBack;
 
-  // Consome os eventos seriais (1 comando = 1 clique)
   serialUp = serialDown = serialOk = serialBack = false;
 
   /* -------- NAVEGACAO -------- */
@@ -242,13 +194,11 @@ void menuLoop() {
     MenuItem& item = currentMenu[currentIndex];
 
     if (item.children && currentLevel < MAX_LEVELS - 1) {
-
       menuStack[currentLevel]  = currentMenu;
       indexStack[currentLevel] = currentIndex;
       countStack[currentLevel] = currentCount;
 
       currentLevel++;
-
       currentMenu  = item.children;
       currentCount = item.childCount;
       currentIndex = 0;
@@ -260,19 +210,19 @@ void menuLoop() {
 
   /* -------- BACK -------- */
   if (back && currentLevel > 0) {
-
     currentLevel--;
-
     currentMenu  = menuStack[currentLevel];
     currentIndex = indexStack[currentLevel];
     currentCount = countStack[currentLevel];
   }
 
-  /* -------- DESENHO -------- */
+  /* -------- DISPLAY -------- */
   u8g.firstPage();
   do {
     drawMenu();
   } while (u8g.nextPage());
 }
+
+
 //********************************************************************************************************************************** */
 //********************************************************************************************************************************** */
