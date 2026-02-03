@@ -60,8 +60,8 @@ static bool serialBack = false;
 /* =====================================================
    ACOES (EXEMPLOS)
    ===================================================== */
-static void actionLedTestOn()  { Serial.println("LED ON");  }
-static void actionLedTestOff() { Serial.println("LED OFF"); }
+static void actionLedTestOn()  { Serial.println("LED ON"); digitalWrite(A0, HIGH); }
+static void actionLedTestOff() { Serial.println("LED OFF"); digitalWrite(A0, LOW); }
 static void actionBlinkTest()  { Serial.println("BLINK");   }
 static void actionInfo()       { Serial.println("INFO");    }
 
