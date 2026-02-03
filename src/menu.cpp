@@ -60,22 +60,27 @@ static bool serialBack = false;
 /* =====================================================
    ACOES (EXEMPLOS)
    ===================================================== */
-static void actionLedTestOn()  { Serial.println("LED ON"); digitalWrite(A0, HIGH); }
-static void actionLedTestOff() { Serial.println("LED OFF"); digitalWrite(A0, LOW); }
-static void actionBlinkTest()  { Serial.println("BLINK");   }
+static void actionLedGreenOn()  { Serial.println("LED GREEN ON"); digitalWrite(A2, HIGH); }
+static void actionLedGreenOff() { Serial.println("LED GREEN OFF"); digitalWrite(A2, LOW); }
+static void actionLedRedOn ()  { Serial.println("LED RED ON"); digitalWrite(A0, HIGH); }
+static void actionLedRedOff () { Serial.println("LED RED OFF"); digitalWrite(A0, LOW); }
+static void actionBlinkTest()  { Serial.println("BLINK");  for(int i = 0; i< 20; i++){digitalWrite(A0,HIGH);delay(500);digitalWrite(A0,LOW);delay(500);} }
 static void actionInfo()       { Serial.println("INFO");    }
 
 /* =====================================================
    MENUS
    ===================================================== */
 static MenuItem menuTests[] = {
-  { "LED ON",  NULL, 0, actionLedTestOn  },
-  { "LED OFF", NULL, 0, actionLedTestOff },
+  { "LED GREEN ON",  NULL, 0, actionLedGreenOn  },
+  { "LED GREEN OFF", NULL, 0, actionLedGreenOff },
+  { "LED RED ON",  NULL, 0, actionLedRedOn  },
+  { "LED RED OFF",  NULL, 0, actionLedRedOff  },
   { "BLINK",   NULL, 0, actionBlinkTest  }
 };
 
 static MenuItem menuMain[] = {
-  { "TESTES", menuTests, 3, NULL },
+  //{ "TESTES", menuTests, 3, NULL },
+  { "TESTES", menuTests, COUNT_OF(menuTests), NULL },
   { "SOBRE",  NULL,      0, actionInfo }
 };
 
