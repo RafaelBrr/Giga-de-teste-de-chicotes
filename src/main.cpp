@@ -90,7 +90,7 @@ if(progressBar == false){
   percent = 0;
 }
 
-digitalWrite(A0, HIGH); // Turn the LED on (HIGH is the voltage level)
+//digitalWrite(A0, HIGH); // Turn the LED on (HIGH is the voltage level)
 
 
    

@@ -4,6 +4,8 @@
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
+#define COUNT_OF(x) (sizeof(x) / sizeof(x[0]))
+
 
 /* =====================================================
    BOTOES
@@ -50,8 +52,12 @@ static void actionBrightness() {}
 static void actionContrast() {}
 static void actionInfo() {}
 static void actionReset() {}
-static void actionLedTest() {digitalWrite(A2, HIGH);}
-static void actionBlinkTest() {for(int i = 0; i <= 10; i++){digitalWrite(A2, LOW);delay(500);digitalWrite(A2, HIGH);delay(500);}}
+//static void actionLedTest() {digitalWrite(A2, HIGH);}
+static void actionLedRedOn() {digitalWrite(A2, HIGH);}
+static void actionLedRedOff() {digitalWrite(A2, LOW);}
+static void actionLedGreenOn() {digitalWrite(A0, HIGH);}
+static void actionLedGreenOff() {digitalWrite(A0, LOW);}
+static void actionBlinkTest() {for(int i = 0; i <= 20; i++){digitalWrite(A2, HIGH);digitalWrite(A0, LOW);delay(500);digitalWrite(A2, LOW);delay(500);digitalWrite(A0, HIGH);delay(500);}}
 
 /* =====================================================
    DEFINICAO DOS MENUS (4 NIVEIS)
@@ -74,16 +80,20 @@ static MenuItem menuConfig[] = {
 };
 
 static MenuItem menuTests[] = {
-  { "LED",    NULL, 0, actionLedTest },
+  { "LED VERMELHO ON",    NULL, 0, actionLedRedOn },
+  { "LED VERMELHO OFF",    NULL, 0, actionLedRedOff },
+  { "LED VERDE ON",    NULL, 0, actionLedGreenOn },
+  { "LED VERDE OFF",    NULL, 0, actionLedGreenOff },
   { "Blink", NULL, 0, actionBlinkTest }
 };
 
 // ---- NIVEL 2 (RAIZ) ----
 static MenuItem menuMain[] = {
-  { "Config", menuConfig, 2, NULL },
-  { "Testes", menuTests,  2, NULL },
+  { "Config", menuConfig, COUNT_OF(menuConfig), NULL },
+  { "Testes", menuTests,  COUNT_OF(menuTests),  NULL },
   { "Sobre",  NULL,       0, actionInfo }
 };
+
 
 /* =====================================================
    LEITURA BOTAO (DEBOUNCE SIMPLES)
