@@ -11,8 +11,8 @@
 
 // --- Display LCD ST7920 (modo SPI via software) ---
 //U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET - Config for IMBEL projects
-U8GLIB_ST7920_128X64_1X u8g(7, 4, 2 ,8); //Enable, RW, RS, RESET - Configuração alternativa para casa
-//U8GLIB_ST7920_128X64_1X u8g(6, 5, 4 ,7); //Enable, RW, RS, RESET
+U8GLIB_ST7920_128X64_1X u8g(6, 5, 4 ,7); //Enable, RW, RS, RESET - Configuração alternativa para casa
+
 //u8g_SSD1306_128X64_NONAME_F_HW_I2C u8g(u8g_R0);
 
 // Inicialização do display ST7567S em I2C com driver correto
@@ -32,7 +32,7 @@ String lastCommand = "";
 void setup() {
   // Inicializa comunicação
   Serial.begin(9600);
-  u8g.begin();
+  //u8g.begin();
 
   //Configure pin as output
   pinMode(11, OUTPUT); // 
@@ -69,14 +69,18 @@ void setup() {
 
   u8g.firstPage();
   do {
-    u8g.setRot180();
+    //u8g.setRot180();
     u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
-    u8g.drawStr(10, 20, "Inicializando Giga de teste...");
+    //u8g.setFont(u8g_font_5x7r);//fonte de 5 pixels
+    //u8g.setPrintPos(1,25);
+    //u8g.setRot180();
+    //u8g.print("Initializing system...");
+    u8g.drawStr(10, 20, "Inicializando Giga ...");
   } while (u8g.nextPage());
 
   Serial.println("Sistema pronto!");
-  menuInit();
-  delay(200);
+  //menuInit();
+  delay(2000);
   //drawProgressBar(percent);
 
   }
@@ -108,7 +112,7 @@ digitalWrite(A0, HIGH); // Turn the LED on (HIGH is the voltage level)
   // isButtonPressed(50); // Check if button on pin 50 is pressed
   // isButtonPressed(52); // Check if button on pin 52 is pressed
 
-  menuLoop();
+  //menuLoop();
     
     // String comand = readFromSerial();
 

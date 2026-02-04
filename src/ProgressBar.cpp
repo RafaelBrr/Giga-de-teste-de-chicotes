@@ -24,7 +24,7 @@ void drawProgressBar(int value) {
 u8g.firstPage();
   do {
     //u8g.setFont(u8g_font_6x10);
-    u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
+    u8g.setFont(u8g_font_5x7r);//fonte de 5 pixels
     u8g.drawStr(15, 15, "Giga HOME");
     
     // Outer decorative frame
