@@ -14,7 +14,7 @@ extern U8GLIB_ST7920_128X64_1X u8g;
 
 void showFirmwareInfo() {
 
-     u8g.firstPage();
+  u8g.firstPage();
   do {
     u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
     u8g.setPrintPos(20, 5);

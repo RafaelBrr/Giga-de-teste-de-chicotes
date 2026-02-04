@@ -39,10 +39,10 @@ bool realizarTesteContinuidade() {
   
 bool continuidade = true;
 
-u8g2.clearBuffer();
-u8g2.setFont(u8g2_font_6x12_tr);
-u8g2.drawStr(10, 30, "Testando continuidade... do cabo de 10 vias");
-u8g2.sendBuffer();
+//u8g.clearBuffer();
+u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
+u8g.drawStr(10, 30, "Testando continuidade... do cabo de 10 vias");
+//u8g.sendBuffer();
 
   for (int i = 0; i < 10; i++) {
     // Zera todos os pinos de saída antes do teste
