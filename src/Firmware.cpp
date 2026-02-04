@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <U8glib.h>
 
+#include "images.h"
+
 extern U8GLIB_ST7920_128X64_1X u8g;
 
 #define FIRMWARE_VERSION "1.0.0"
@@ -38,6 +40,8 @@ void showFirmwareInfo() {
     u8g.setPrintPos(0, 55);
     u8g.print("Date: ");
     u8g.println(FIRMWARE_DATE);
+
+    u8g.drawBitmapP(90, 15, 5, 44, bitmap_linux_logo_icon_37x44_Inverter);
 
     } while (u8g.nextPage());
     delay(2000);

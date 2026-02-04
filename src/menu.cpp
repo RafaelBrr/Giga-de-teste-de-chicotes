@@ -60,12 +60,15 @@ static bool serialBack = false;
 /* =====================================================
    ACOES (EXEMPLOS)
    ===================================================== */
-static void actionLedGreenOn()  { Serial.println("LED GREEN ON"); digitalWrite(A2, HIGH); }
-static void actionLedGreenOff() { Serial.println("LED GREEN OFF"); digitalWrite(A2, LOW); }
-static void actionLedRedOn ()  { Serial.println("LED RED ON"); digitalWrite(A0, HIGH); }
-static void actionLedRedOff () { Serial.println("LED RED OFF"); digitalWrite(A0, LOW); }
-static void actionBlinkTest()  { Serial.println("BLINK");  for(int i = 0; i< 20; i++){digitalWrite(A0,HIGH);delay(500);digitalWrite(A0,LOW);delay(500);} }
+static void actionLedGreenOn()  { Serial.println("LED GREEN ON"); digitalWrite(A0, HIGH); }
+static void actionLedGreenOff() { Serial.println("LED GREEN OFF"); digitalWrite(A0, LOW); }
+static void actionLedRedOn ()  { Serial.println("LED RED ON"); digitalWrite(A2, HIGH); }
+static void actionLedRedOff () { Serial.println("LED RED OFF"); digitalWrite(A2, LOW); }
+static void actionBlinkTest()  { Serial.println("BLINK");  for(int i = 0; i< 20; i++){digitalWrite(A0,HIGH);digitalWrite(A2,LOW);delay(500);digitalWrite(A0,LOW);digitalWrite(A2,HIGH);delay(500);} }
 static void actionInfo()       { Serial.println("INFO");    }
+static void actionInfoVersion(){ u8g.drawStr(10, 20, FIRMWARE_VERSION); Serial.println("VERSION"); }
+static void actionSettings()   { Serial.println("SETTINGS"); }
+static void actionBuzzerTest() { Serial.println("BUZZER TEST");  for(int i = 0; i< 3; i++){digitalWrite(A2,HIGH);delay(200);digitalWrite(A2,LOW);delay(200);} }
 
 /* =====================================================
    MENUS
@@ -78,10 +81,19 @@ static MenuItem menuTests[] = {
   { "BLINK",   NULL, 0, actionBlinkTest  }
 };
 
+static MenuItem menuSettings[] = {  
+  { "Teste LED", menuTests, COUNT_OF(menuTests), NULL },
+  { "TESTE BUZZER", NULL, 0, actionBuzzerTest },
+  { "Adjust",  NULL, 0, actionLedGreenOn  },
+  
+};
+
 static MenuItem menuMain[] = {
   //{ "TESTES", menuTests, 3, NULL },
-  { "TESTES", menuTests, COUNT_OF(menuTests), NULL },
-  { "SOBRE",  NULL,      0, actionInfo }
+  { "Testes", menuTests, COUNT_OF(menuTests), NULL },
+  { "Settings", menuSettings, COUNT_OF(menuSettings), actionSettings },
+  { "About",  NULL,      0, actionInfo },
+  { "Version",  NULL,      0, actionInfoVersion }
 };
 
 /* =====================================================
@@ -144,14 +156,20 @@ static void handleSerial() {
 
   /* ----- GOTO ----- */
   if (cmd == "GOTO MAIN") {
-    gotoMenu(menuMain, 2);
+    gotoMenu(menuMain, COUNT_OF(menuMain));
     Serial.println("ACK GOTO MAIN");
     return;
   }
 
   if (cmd == "GOTO TESTES") {
-    gotoMenu(menuTests, 3);
+    gotoMenu(menuTests, COUNT_OF(menuTests));
     Serial.println("ACK GOTO TESTES");
+    return;
+  }
+
+   if (cmd == "GOTO SETTINGS") {
+    gotoMenu(menuSettings, COUNT_OF(menuSettings));
+    Serial.println("ACK GOTO SETTINGS");
     return;
   }
 
@@ -160,14 +178,20 @@ static void handleSerial() {
     String itemName = cmd.substring(4);
     itemName.trim();
 
-    MenuItem* item = findItemByName(menuTests, 3, itemName.c_str());
+    MenuItem* item = findItemByName(menuSettings, COUNT_OF(menuSettings), itemName.c_str());
+    if (item == NULL) {
+      item = findItemByName(menuMain, COUNT_OF(menuMain), itemName.c_str());
+    }
+    //MenuItem* item = findItemByName(menuSettings, COUNT_OF(menuSettings), itemName.c_str());
+    Serial.println(itemName.c_str());
 
     if (item && item->action) {
       item->action();
       Serial.print("ACK RUN ");
-      Serial.println(itemName);
+      //Serial.println(itemName);
     } else {
       Serial.println("ERR ITEM NOT FOUND");
+      //Serial.println(itemName.c_str());
     }
     return;
   }
@@ -211,7 +235,7 @@ void menuInit() {
   Serial.println("CMD: RUN LED ON | RUN LED OFF | RUN BLINK");
 
   currentMenu  = menuMain;
-  currentCount = 2;
+  currentCount = COUNT_OF(menuMain);
   currentIndex = 0;
   currentLevel = 0;
 }
