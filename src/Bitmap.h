@@ -1,6 +1,6 @@
 #ifndef __BITMAP__H__
 #define __BITMAP__H__
-#include <U8g2lib.h>
+#include <U8glib.h>
 
 
 void drawBitmap();
