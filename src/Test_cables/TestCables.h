@@ -5,7 +5,11 @@
 
 extern U8G2_ST7920_128X64_F_SW_SPI u8g2;
 
-void TesteCabo_2558();
+// void TestCable_2558();
+// void TestCable_2560();
+// void TestCable_2562();
+// void TestCable_2564();
+// void TestCable_2566();
 void configurarPinosCabo10Vias();
 bool realizarTesteContinuidade();
 bool testeCurtoEntreVias();

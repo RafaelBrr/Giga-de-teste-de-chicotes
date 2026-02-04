@@ -5,6 +5,8 @@
 
 void showFirmwareInfo();
 
+void showFirmwareVersion();
+
 
 
 #endif  //!__FIRMWARE__H__

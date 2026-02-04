@@ -6,6 +6,7 @@ extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
 #define COUNT_OF(x) (sizeof(x) / sizeof(x[0]))
 
+
 /* =====================================================
    BRANCH TESTMENULABVIEW
    ===================================================== */
@@ -65,21 +66,45 @@ static void actionLedGreenOff() { Serial.println("LED GREEN OFF"); digitalWrite(
 static void actionLedRedOn ()  { Serial.println("LED RED ON"); digitalWrite(A2, HIGH); }
 static void actionLedRedOff () { Serial.println("LED RED OFF"); digitalWrite(A2, LOW); }
 static void actionBlinkTest()  { Serial.println("BLINK");  for(int i = 0; i< 20; i++){digitalWrite(A0,HIGH);digitalWrite(A2,LOW);delay(500);digitalWrite(A0,LOW);digitalWrite(A2,HIGH);delay(500);} }
-static void actionInfo()       { Serial.println("INFO");    }
-static void actionInfoVersion(){ u8g.drawStr(10, 20, FIRMWARE_VERSION); Serial.println("VERSION"); }
+static void actionInfo()       { showFirmwareInfo();   }
+static void actionInfoVersion(){ showFirmwareVersion(); }
 static void actionSettings()   { Serial.println("SETTINGS"); }
 static void actionBuzzerTest() { Serial.println("BUZZER TEST");  for(int i = 0; i< 3; i++){digitalWrite(A2,HIGH);delay(200);digitalWrite(A2,LOW);delay(200);} }
+static void actionTestCAB2558() { Serial.println("TESTE CAB-2558");  }
+static void actionTestCAB2560() { Serial.println("TESTE CAB-2560");  }
+static void actionTestCAB2562() { Serial.println("TESTE CAB-2562");  }
+static void actionTestCAB2564() { Serial.println("TESTE CAB-2564");  }
+static void actionTestCAB2566() { Serial.println("TESTE CAB-2566   ");  }
 
 /* =====================================================
    MENUS
    ===================================================== */
-static MenuItem menuTests[] = {
+
+
+static MenuItem menuLEDs[] = {
   { "LED GREEN ON",  NULL, 0, actionLedGreenOn  },
   { "LED GREEN OFF", NULL, 0, actionLedGreenOff },
   { "LED RED ON",  NULL, 0, actionLedRedOn  },
-  { "LED RED OFF",  NULL, 0, actionLedRedOff  },
-  { "BLINK",   NULL, 0, actionBlinkTest  }
+  { "TESTE BUZZER", NULL, 0, actionBuzzerTest },
+  { "BLINK",   NULL, 0, actionBlinkTest  },
+ 
 };
+
+static MenuItem menuCables[] = {
+  { "CAB-2558",  NULL, 0, actionTestCAB2558  },
+  { "CAB-2560", NULL, 0, actionTestCAB2560 },
+  { "CAB-2562",  NULL, 0, actionTestCAB2562  },
+  { "CAB-2564",  NULL, 0, actionTestCAB2564  },
+  { "CAB-2566",   NULL, 0, actionTestCAB2566  }
+
+};
+
+static MenuItem menuTests[] = {
+  { "LEDs",  menuLEDs, COUNT_OF(menuLEDs), NULL },
+  { "CABLES", menuCables, COUNT_OF(menuCables), NULL },
+};
+
+
 
 static MenuItem menuSettings[] = {  
   { "Teste LED", menuTests, COUNT_OF(menuTests), NULL },
@@ -95,6 +120,10 @@ static MenuItem menuMain[] = {
   { "About",  NULL,      0, actionInfo },
   { "Version",  NULL,      0, actionInfoVersion }
 };
+
+
+
+
 
 /* =====================================================
    LEITURA DE BOTAO (DEBOUNCE SIMPLES)
@@ -181,6 +210,12 @@ static void handleSerial() {
     MenuItem* item = findItemByName(menuSettings, COUNT_OF(menuSettings), itemName.c_str());
     if (item == NULL) {
       item = findItemByName(menuMain, COUNT_OF(menuMain), itemName.c_str());
+    } if(item == NULL) {
+      item = findItemByName(menuTests, COUNT_OF(menuTests), itemName.c_str());
+    } if(item == NULL) {
+      item = findItemByName(menuLEDs, COUNT_OF(menuLEDs), itemName.c_str());
+    } if(item == NULL) {
+      item = findItemByName(menuCables, COUNT_OF(menuCables), itemName.c_str());
     }
     //MenuItem* item = findItemByName(menuSettings, COUNT_OF(menuSettings), itemName.c_str());
     Serial.println(itemName.c_str());

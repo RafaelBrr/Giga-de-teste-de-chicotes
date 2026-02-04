@@ -9,7 +9,7 @@ void drawBitmap() {
 
     //u8g.drawBitmapP(85, 1, 5, 44, bitmap_linux_logo_icon_37x44_Inverter);
 
-    u8g.drawBitmapP(70, 1, 8, 44, bitmap_Arduino_logo_icon_58x44_Inverter);
+    u8g.drawBitmapP(10, 0, 14, 40, bitmap_Linux_logo_icon_112x40_Inverter);
 
 
 }

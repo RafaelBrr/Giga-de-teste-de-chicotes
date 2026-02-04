@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "U8glib.h"
-#include "TesteCAB_2558.h"
+#include "TestCables.h"
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
@@ -234,5 +234,22 @@ bool testeSequenciaDetalhado() {
   return testeSequeciaDetalhado;
 }
 
+
+
+void TestCable_2560() {
+  // Implementação do teste para o cabo CAB-2560
+}
+
+void TestCable_2562() {
+  // Implementação do teste para o cabo CAB-2562
+}
+
+void TestCable_2564() {
+  // Implementação do teste para o cabo CAB-2564
+}
+
+void TestCable_2566() {
+  // Implementação do teste para o cabo CAB-2566
+}
 
 //******************************************************************************************************************************* */

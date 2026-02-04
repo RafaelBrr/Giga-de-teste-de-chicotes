@@ -46,3 +46,16 @@ void showFirmwareInfo() {
     } while (u8g.nextPage());
     delay(2000);
 }
+
+void showFirmwareVersion() {
+
+     u8g.firstPage();
+  do {
+    u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
+    u8g.setPrintPos(30, 25);
+    u8g.print("Version: ");
+    u8g.println(FIRMWARE_VERSION);
+
+    } while (u8g.nextPage());
+    delay(2000);
+}
