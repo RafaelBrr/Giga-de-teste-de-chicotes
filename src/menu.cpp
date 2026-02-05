@@ -14,7 +14,7 @@ extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
 
 /* =====================================================
-   BRANCH TESTMENULABVIEW
+   BRANCH TestMenuLabviewScrollDisplay
    ===================================================== */
 /* =====================================================
    DEFINICOES
