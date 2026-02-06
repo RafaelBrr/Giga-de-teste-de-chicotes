@@ -45,6 +45,9 @@ void setup() {
   pinMode(23, OUTPUT); // 
   pinMode(25, OUTPUT); // 
   pinMode(27, OUTPUT); // 
+  pinMode(LED_BUILTIN, OUTPUT); //
+
+  digitalWrite(LED_BUILTIN, LOW); // Turn the LED off (LOW is the voltage level)
 
   //Configure pin buttons
   pinMode(47, INPUT_PULLUP); // 

@@ -4,7 +4,7 @@
 
 
 
-bool isButtonPressed(int pin);
+// bool isButtonPressed(int pin);
 
 
 

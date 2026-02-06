@@ -41,7 +41,7 @@ void showFirmwareInfo() {
     u8g.print("Date: ");
     u8g.println(FIRMWARE_DATE);
 
-    u8g.drawBitmapP(90, 15, 5, 44, bitmap_linux_logo_icon_37x44_Inverter);
+    u8g.drawBitmapP(90, 15, 5, 40, bitmap_Linux);
 
     } while (u8g.nextPage());
     delay(2000);

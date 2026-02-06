@@ -3,6 +3,7 @@
 #include "Firmware.h"
 #include "menu.h"
 #include "Test_cables/TestCables.h"
+#include "Buzzer.h"
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
@@ -11,7 +12,11 @@ extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
 //static uint8_t scrollOffset = 0;
 
+#define FEEDBACK_PIN   LED_BUILTIN   // pode ser buzzer ou LED
+#define FEEDBACK_TIME  80          // ms (ajuste como quiser)
 
+static bool feedbackActive = false;
+static unsigned long feedbackStart = 0;
 
 /* =====================================================
    BRANCH TestMenuLabviewScrollDisplay
@@ -30,6 +35,9 @@ extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 #define BTN_DOWN   50
 #define BTN_OK     52
 #define BTN_BACK   47
+//#define pinBuzzer  LED_BUILTIN
+
+
 
 /* =====================================================
    ESTRUTURA DO MENU
@@ -142,6 +150,7 @@ static MenuItem menuMain[] = {
 static bool buttonPressed(uint8_t pin) {
   static uint8_t lastState[70];
   uint8_t state = digitalRead(pin);
+  //digitalWrite(pinBuzzer, state); // DEBUG: mostra estado do botao no LED
 
   if (lastState[pin] == HIGH && state == LOW) {
     lastState[pin] = state;
@@ -231,6 +240,18 @@ void menuInit() {
   scrollOffset = 0;
 }
 
+static void triggerFeedback() {
+  digitalWrite(FEEDBACK_PIN, HIGH);
+  feedbackActive = true;
+  feedbackStart = millis();
+}
+
+static void updateFeedback() {
+  if (feedbackActive && (millis() - feedbackStart >= FEEDBACK_TIME)) {
+    digitalWrite(FEEDBACK_PIN, LOW);
+    feedbackActive = false;
+  }
+}
 /* =====================================================
    LOOP
    ===================================================== */
@@ -243,6 +264,10 @@ void menuLoop() {
   bool ok   = buttonPressed(BTN_OK)   || evOk;
   bool back = buttonPressed(BTN_BACK) || evBack;
 
+
+  if (up || down || ok || back) {
+  triggerFeedback();
+}
   evUp = evDown = evOk = evBack = false;
 
   if (up && currentIndex > 0) currentIndex--;
@@ -283,6 +308,9 @@ void menuLoop() {
   do {
     drawMenu();
   } while (u8g.nextPage());
+
+  updateFeedback();
+
 }
 
 
