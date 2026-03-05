@@ -9,6 +9,7 @@
 #include "Firmware.h"
 #include "Serial.h"
 #include "Buttons.h"
+#include "Buzzer.h"
 
 // --- Display LCD ST7920 (modo SPI via software) ---
 U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET - Config for IMBEL projects
