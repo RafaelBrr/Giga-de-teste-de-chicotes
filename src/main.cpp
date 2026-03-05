@@ -30,6 +30,10 @@ bool screenFirmware = false;
 bool screenSerial = false;
 String lastCommand = "";
 
+#define REDLED A0
+#define GREENLED A2
+#define BUZZER 46
+
 void setup() {
   // Inicializa comunicação
   Serial.begin(9600);
@@ -66,8 +70,9 @@ void setup() {
   pinMode(34, INPUT); // 
   pinMode(36, INPUT); // 
 
-  pinMode(A0, OUTPUT); // LED gree indicador de status
-  pinMode(A2, OUTPUT); // LED red indicador de status
+  pinMode(REDLED, OUTPUT); // LED gree indicador de status
+  pinMode(GREENLED, OUTPUT); // LED red indicador de status
+  pinMode(BUZZER, OUTPUT); // Buzzer (feedback)
 
   //ProgressBar.init();
 
@@ -84,6 +89,7 @@ void setup() {
   //drawProgressBar(percent);
 
   }
+ //***************************************************************************************** */ 
 
 void loop() {
 

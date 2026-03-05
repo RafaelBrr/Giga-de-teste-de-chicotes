@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "Test_cables/TestCables.h"
 #include "Buzzer.h"
+#include "LED.h"
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
@@ -12,7 +13,7 @@ extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
 //static uint8_t scrollOffset = 0;
 
-#define FEEDBACK_PIN   LED_BUILTIN   // pode ser buzzer ou LED
+#define FEEDBACK_PIN   46   // pode ser buzzer
 #define FEEDBACK_TIME  80          // ms (ajuste como quiser)
 
 static bool feedbackActive = false;
@@ -90,10 +91,11 @@ static void actionBlinkTest() {
     digitalWrite(A0, LOW);
     digitalWrite(A2, HIGH);
     delay(300);
+    digitalWrite(A2, LOW);
   }
 }
 
-static void actionBuzzerTest() { Serial.println(F("BUZZER TEST")); }
+static void actionBuzzerTest() { testBuzzer(); }
 static void actionInfo()       { showFirmwareInfo(); }
 static void actionInfoVersion(){ showFirmwareVersion(); }
 static void actionTestCAB_2558(){ TestCAB_2558(); }
@@ -104,6 +106,7 @@ static void actionTestCAB_2566(){ TestCAB_2566(); }
 static void actionTestCAB_2568(){ TestCAB_2568(); }
 static void actionTestCAB_2570(){ TestCAB_2570(); }
 static void actionTestCAB_2572(){ TestCAB_2572(); }
+static void actionAutoTest(){ autoTest(); }
 
 
 /* =====================================================
@@ -115,13 +118,14 @@ static MenuItem menuLEDs[] = {
   { "LED RED ON",    NULL, 0, actionLedRedOn    },
   { "LED RED OFF",   NULL, 0, actionLedRedOff   },
   { "BLINK",         NULL, 0, actionBlinkTest  },
-  { "BUZZER TEST",   NULL, 0, actionBuzzerTest }
+  //{ "BUZZER TEST",   NULL, 0, actionBuzzerTest },
+  //{ "AUTO TEST",     NULL, 0, actionAutoTest   },
 };
 
 static MenuItem menuSettings[] = {
   { "LEDs",  menuLEDs, COUNT_OF(menuLEDs), NULL },
   { "Buzzer", NULL, 0, actionBuzzerTest },
-
+  { "AUTO TEST",     NULL, 0, actionAutoTest   },
 };
 
 static MenuItem menuCables[] = {
