@@ -1,5 +1,5 @@
 /* =====================================================
-   BRANCH TestMenuLabviewScrollDisplay
+   BRANCH TestMenuLabviewScrollDisplayBuzzer
    ===================================================== */
 
 #ifndef __LED__H__

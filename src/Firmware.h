@@ -1,5 +1,5 @@
 /* =====================================================
-   BRANCH TestMenuLabviewScrollDisplay
+   BRANCH TestMenuLabviewScrollDisplayBuzzer
    ===================================================== */
 
 #ifndef __FIRMWARE__H__
