@@ -19,5 +19,6 @@ bool testeCurtoEntreVias();
 bool testeCurtoDetalhado();
 bool testeSequenciaCabo();
 bool testeSequenciaDetalhado();
+void Test();
 
 #endif  //!__TESTECAB_2558__H__

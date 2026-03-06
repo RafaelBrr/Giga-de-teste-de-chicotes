@@ -21,7 +21,10 @@ const int pinosA[NUM_VIAS] = {22, 23, 24, 25, 26, 27};
 // Lado B do cabo
 const int pinosB[NUM_VIAS] = {30, 31, 32, 33, 34, 35};
 
+String cableModel = "";
 
+int tipo = -1; // Tipo de cabo a ser testado
+bool res = false; // Resultado do teste de continuidade
 
 void configurarPinosCabo10Vias() {
   for (int i = 0; i < 10; i++) {
@@ -250,6 +253,51 @@ void TestCable_2564() {
 
 void TestCable_2566() {
   // Implementação do teste para o cabo CAB-2566
+}
+
+
+void Test() {
+  // Implementação da função de teste
+
+    if(Serial.available()){
+    cableModel = Serial.readStringUntil('\n');
+    Serial.print("Modelo do cabo recebido: ");
+    Serial.println(cableModel);
+
+    u8g.firstPage();
+    do {
+      u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
+      u8g.drawStr(10, 20, cableModel.c_str());
+    } while (u8g.nextPage());
+
+    if(cableModel.equals("CAB-2558")){
+      Serial.println("Iniciando teste do Cabo Tipo 1...");
+      tipo = 0;
+    }
+    else if(cableModel.equals("Cabo Tipo 2")){
+      Serial.println("Iniciando teste do Cabo Tipo 2...");
+      tipo = 1;
+    }
+    else{
+      Serial.println("Modelo de cabo desconhecido.");
+    }
+  
+  switch (tipo)
+  {
+  case 0:
+    //TesteCabo_2558();
+    configurarPinosCabo10Vias();
+    res = realizarTesteContinuidade();
+    break;
+  case 2:
+    //TesteCabo_Tipo2();
+    break;
+  
+  default:
+    break;
+  }
+
+  }
 }
 
 //******************************************************************************************************************************* */

@@ -8,7 +8,6 @@ void turnOffGreenLED();
 void turnOnRedLED();
 void turnOffRedLED();
 void blinkLEDs(int times, int delayTime);
-void testBuzzer();
 void autoTest();
 
 

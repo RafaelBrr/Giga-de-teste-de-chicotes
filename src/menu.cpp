@@ -15,9 +15,6 @@ extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
 
 /* =====================================================
-   BRANCH TestMenuLabviewScrollDisplay
-   ===================================================== */
-/* =====================================================
    DEFINICOES
    ===================================================== */
 #define COUNT_OF(x) (sizeof(x) / sizeof(x[0]))
@@ -102,6 +99,8 @@ static void actionTestCAB_2568(){ TestCAB_2568(); }
 static void actionTestCAB_2570(){ TestCAB_2570(); }
 static void actionTestCAB_2572(){ TestCAB_2572(); }
 static void actionAutoTest(){ autoTest(); }
+static void disableBuzzer() { disableBuzzer(); }
+static void enableBuzzer() { enableBuzzer(); }
 
 
 /* =====================================================
@@ -114,13 +113,20 @@ static MenuItem menuLEDs[] = {
   { "LED RED OFF",   NULL, 0, actionLedRedOff   },
   { "BLINK",         NULL, 0, actionBlinkTest  },
   //{ "BUZZER TEST",   NULL, 0, actionBuzzerTest },
-  //{ "AUTO TEST",     NULL, 0, actionAutoTest   },
+  { "AUTO TEST",     NULL, 0, actionAutoTest   },
+  //{ "BUZZER",     NULL, 0, disableBuzzer   },
 };
 
 static MenuItem menuSettings[] = {
   { "LEDs",  menuLEDs, COUNT_OF(menuLEDs), NULL },
-  { "Buzzer", NULL, 0, actionBuzzerTest },
+  { "Buzzer", buzzerSettings, COUNT_OF(buzzerSettings), NULL },
   { "AUTO TEST",     NULL, 0, actionAutoTest   },
+};
+
+static MenuItem buzzerSettings[] = {
+  { "ON",  NULL, 0, enableBuzzer},
+  { "OFF", NULL, 0, disableBuzzer },
+  
 };
 
 static MenuItem menuCables[] = {

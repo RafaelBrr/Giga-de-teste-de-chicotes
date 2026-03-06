@@ -1,3 +1,7 @@
+/* =====================================================
+   BRANCH BuzzerFeedback
+   ===================================================== */
+
 #include <Arduino.h>
 #include <U8glib.h>
 #include <string.h>
@@ -20,14 +24,13 @@ U8GLIB_ST7920_128X64_1X u8g(6, 4, 2 ,8); //Enable, RW, RS, RESET - Config for IM
 // Inicialização do display ST7567S em I2C com driver correto
 // u8g_ST7567_ENH_DG128064I_F_SW_I2C u8g(u8g_R0, SCL, SDA, U8X8_PIN_NONE);// Use standard I2C pins for Arduino Uno(A4-SDA, A5-SCL)
 
-String cableModel = "";
 
-int tipo = -1; // Tipo de cabo a ser testado
-bool res = false; // Resultado do teste de continuidade
+
+
 int percent = 0; // Percentual da barra de progresso
 
-bool progressBar = false;
-bool screenFirmware = false;
+bool progressBar = true;
+bool screenFirmware = true;
 bool screenSerial = false;
 String lastCommand = "";
 
@@ -41,7 +44,7 @@ void setup() {
   u8g.begin();
 
   //Configure pin as output
-  pinMode(11, OUTPUT); // j
+  pinMode(11, OUTPUT); // 
   pinMode(13, OUTPUT); // 
   pinMode(15, OUTPUT); // 
   pinMode(17, OUTPUT); // 
@@ -52,7 +55,7 @@ void setup() {
   pinMode(27, OUTPUT); // 
   pinMode(LED_BUILTIN, OUTPUT); //
 
-  digitalWrite(LED_BUILTIN, LOW); // Turn the LED off (LOW is the voltage level)
+  //digitalWrite(LED_BUILTIN, LOW); // Turn the LED off (LOW is the voltage level)
 
   //Configure pin buttons
   pinMode(47, INPUT_PULLUP); // 
@@ -63,10 +66,10 @@ void setup() {
   //Configure pin as input
   pinMode(A4, INPUT); // 
   pinMode(A6, INPUT); // 
-  // pinMode(A8, INPUT); // 
-  // pinMode(A10, INPUT); // 
-  // pinMode(A12, INPUT); // 
-  // pinMode(A14, INPUT); // 
+  pinMode(A8, INPUT); // 
+  pinMode(A10, INPUT); // 
+  pinMode(A12, INPUT); // 
+  pinMode(A14, INPUT); // 
   pinMode(32, INPUT); // 
   pinMode(34, INPUT); // 
   pinMode(36, INPUT); // 
@@ -95,9 +98,9 @@ void setup() {
 void loop() {
 
  
-if(progressBar == false){
+if(progressBar == true){
   drawProgressBar(percent);
-  progressBar = true;
+  progressBar = false;
   percent = 0;
 }
 
@@ -105,9 +108,9 @@ if(progressBar == false){
 
 
    
-  if(screenFirmware == false){
+  if(screenFirmware == true){
     showFirmwareInfo();
-    screenFirmware = true;
+    screenFirmware = false;
    // initializeSerial();
       
   delay(2000);
@@ -149,49 +152,6 @@ if(progressBar == false){
 
 
 
-void Test() {
-  // Implementação da função de teste
-
-    if(Serial.available()){
-    cableModel = Serial.readStringUntil('\n');
-    Serial.print("Modelo do cabo recebido: ");
-    Serial.println(cableModel);
-
-    u8g.firstPage();
-    do {
-      u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
-      u8g.drawStr(10, 20, cableModel.c_str());
-    } while (u8g.nextPage());
-
-    if(cableModel.equals("CAB-2558")){
-      Serial.println("Iniciando teste do Cabo Tipo 1...");
-      tipo = 0;
-    }
-    else if(cableModel.equals("Cabo Tipo 2")){
-      Serial.println("Iniciando teste do Cabo Tipo 2...");
-      tipo = 1;
-    }
-    else{
-      Serial.println("Modelo de cabo desconhecido.");
-    }
-  
-  switch (tipo)
-  {
-  case 0:
-    //TesteCabo_2558();
-    configurarPinosCabo10Vias();
-    res = realizarTesteContinuidade();
-    break;
-  case 2:
-    //TesteCabo_Tipo2();
-    break;
-  
-  default:
-    break;
-  }
-
-  }
-}
 
 
 //*********************************************************************************************************************************************************************** */

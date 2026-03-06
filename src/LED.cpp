@@ -1,5 +1,9 @@
 #include <Arduino.h>
 #include "LED.h"
+#include "Buzzer.h"
+
+#define REDLED A0
+#define GREENLED A2
 
 void setupLEDs() {
   // pinMode(A0, OUTPUT); // LED Verde
@@ -8,19 +12,19 @@ void setupLEDs() {
 }
 
 void turnOnGreenLED() {
-  digitalWrite(A0, HIGH);
+  digitalWrite(GREENLED, HIGH);
 }
 
 void turnOffGreenLED() {
-  digitalWrite(A0, LOW);
+  digitalWrite(GREENLED, LOW);
 }
 
 void turnOnRedLED() {
-  digitalWrite(A2, HIGH);
+  digitalWrite(REDLED, HIGH);
 }
 
 void turnOffRedLED() {
-  digitalWrite(A2, LOW);
+  digitalWrite(REDLED, LOW);
 }
 
 void blinkLEDs(int times, int delayTime) {
@@ -35,19 +39,8 @@ void blinkLEDs(int times, int delayTime) {
   turnOffRedLED(); // Certifique-se de desligar o LED vermelho no final
 }
 
-void testBuzzer() {
-  Serial.println(F("Testing buzzer..."));
-  //tone(8, 1000); // Emite um tom de 1000 Hz no pino 8
-  digitalWrite(46, HIGH); // Acende o LED verde para indicar teste do buzzer
-  delay(1000);   // Aguarda por 1 segundo
-  //noTone(8);     // Para o tom
-  digitalWrite(46, LOW); // Apaga o LED verde
-  Serial.println(F("Buzzer test completed."));
-  delay(500);
-}   
-
 void autoTest() {
-  Serial.println(F("Testing LEDs..."));
+  Serial.println(F("Auto-test Started..."));
   turnOnGreenLED();
   delay(1000);
   turnOffGreenLED();
@@ -57,9 +50,11 @@ void autoTest() {
   turnOffRedLED();
   delay(500);
   blinkLEDs(5, 300);
-  Serial.println(F("LED test completed."));
   testBuzzer();
+  Serial.println(F("Auto-test completed."));
 }
+
+
 
 //************************************************************************************************** */
 // Fim do arquivo LED.cpp
