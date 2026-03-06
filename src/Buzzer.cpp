@@ -1,9 +1,11 @@
 #include <Arduino.h>
 #include "Buzzer.h"
+#include <EEPROM.h>
 
 #define FEEDBACK_TIME  60          // ms (ajuste como quiser)
 #define BUZZER 46
 #define TIMEBUZZER 1000 // Tempo que o buzzer ficará ligado durante o teste (em ms)
+#define EEPROM_ADDR_BUZZER 0
 
 static bool feedbackActive = false;
 static bool buzzerActive = true;
@@ -14,6 +16,7 @@ static unsigned long feedbackStart = 0;
   digitalWrite(BUZZER, HIGH);
   feedbackActive = true;
   feedbackStart = millis();
+  
   }
 }
 
@@ -35,15 +38,26 @@ void testBuzzer() {
   delay(TIMEBUZZER);   // Aguarda por 1 segundo para garantir que o buzzer desligou
 }   
 
+void saveBuzzerState() {
+  EEPROM.update(EEPROM_ADDR_BUZZER, buzzerActive);
+}
+
+void loadBuzzerState() {
+  buzzerActive = EEPROM.read(EEPROM_ADDR_BUZZER);
+}
+
 void enableBuzzer() {
   digitalWrite(BUZZER, HIGH);
   buzzerActive = true;
+   saveBuzzerState();   // salva na EEPROM
 }
 
 void disableBuzzer() {
   digitalWrite(BUZZER, LOW);
   buzzerActive = false;
+  saveBuzzerState();   // salva na EEPROM
 }
+
 
 
 //************************************************************************************************** */

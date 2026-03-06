@@ -78,6 +78,8 @@ void setup() {
   pinMode(GREENLED, OUTPUT); // LED red indicador de status
   pinMode(BUZZER, OUTPUT); // Buzzer (feedback)
 
+  loadBuzzerState();
+
   //ProgressBar.init();
 
   u8g.firstPage();
