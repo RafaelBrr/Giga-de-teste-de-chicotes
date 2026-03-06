@@ -16,7 +16,7 @@ static unsigned long feedbackStart = 0;
   digitalWrite(BUZZER, HIGH);
   feedbackActive = true;
   feedbackStart = millis();
-  
+
   }
 }
 
@@ -47,13 +47,13 @@ void loadBuzzerState() {
 }
 
 void enableBuzzer() {
-  digitalWrite(BUZZER, HIGH);
+  //digitalWrite(BUZZER, HIGH);
   buzzerActive = true;
    saveBuzzerState();   // salva na EEPROM
 }
 
 void disableBuzzer() {
-  digitalWrite(BUZZER, LOW);
+  //digitalWrite(BUZZER, LOW);
   buzzerActive = false;
   saveBuzzerState();   // salva na EEPROM
 }

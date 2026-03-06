@@ -13,6 +13,7 @@ extern U8GLIB_ST7920_128X64_1X u8g;
 //#define FIRMWARE_COPYRIGHT "Copyright (c) 2024 Seu Nome Aqui. Todos os direitos reservados."
 //#define FIRMWARE_LICENSE "MIT License"
 //#define FIRMWARE_WEBSITE "https://seusiteaqui.com"
+#define BRANCH_NAME "BuzzerFeedback"
 
 void showFirmwareInfo() {
 
@@ -28,6 +29,7 @@ void showFirmwareInfo() {
     u8g.setPrintPos(0, 25);
     u8g.print("Version: ");
     u8g.println(FIRMWARE_VERSION);
+    
 
    // u8g.setPrintPos(0, 35);
    // u8g.print("Author: ");
@@ -40,6 +42,10 @@ void showFirmwareInfo() {
     u8g.setPrintPos(0, 55);
     u8g.print("Date: ");
     u8g.println(FIRMWARE_DATE);
+
+    u8g.setPrintPos(0, 64);
+    u8g.print("Branch: ");
+    u8g.println(BRANCH_NAME);
 
     u8g.drawBitmapP(90, 15, 5, 40, bitmap_Linux);
 

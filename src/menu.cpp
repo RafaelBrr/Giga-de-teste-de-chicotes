@@ -99,8 +99,8 @@ static void actionTestCAB_2568(){ TestCAB_2568(); }
 static void actionTestCAB_2570(){ TestCAB_2570(); }
 static void actionTestCAB_2572(){ TestCAB_2572(); }
 static void actionAutoTest(){ autoTest(); }
-static void disableBuzzer() { disableBuzzer(); }
-static void enableBuzzer() { enableBuzzer(); }
+static void actiondisableBuzzer() { disableBuzzer(); }
+static void actionenableBuzzer() { enableBuzzer(); }
 
 
 /* =====================================================
@@ -117,17 +117,19 @@ static MenuItem menuLEDs[] = {
   //{ "BUZZER",     NULL, 0, disableBuzzer   },
 };
 
+static MenuItem buzzerSettings[] = {
+  { "ON",  NULL, 0, enableBuzzer},
+  { "OFF", NULL, 0, disableBuzzer },
+  
+};
+
 static MenuItem menuSettings[] = {
   { "LEDs",  menuLEDs, COUNT_OF(menuLEDs), NULL },
   { "Buzzer", buzzerSettings, COUNT_OF(buzzerSettings), NULL },
   { "AUTO TEST",     NULL, 0, actionAutoTest   },
 };
 
-static MenuItem buzzerSettings[] = {
-  { "ON",  NULL, 0, enableBuzzer},
-  { "OFF", NULL, 0, disableBuzzer },
-  
-};
+
 
 static MenuItem menuCables[] = {
   { "CAB-2558",  NULL, 0, actionTestCAB_2558 },
