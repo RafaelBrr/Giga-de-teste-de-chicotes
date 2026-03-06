@@ -6,8 +6,8 @@
 #include "LED.h"
 #include "Buzzer.h"
 
-#define REDLED A0
-#define GREENLED A2
+#define REDLED A2
+#define GREENLED A0
 
 void setupLEDs() {
   // pinMode(A0, OUTPUT); // LED Verde

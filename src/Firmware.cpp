@@ -50,8 +50,10 @@ void showFirmwareInfo() {
 
     u8g.setPrintPos(0, 64);
     u8g.print("Branch: ");
-    u8g.println(BRANCH_NAME);
+    //u8g.println(GIT_BRANCH);//This variable is defined in platformio.ini and populated by the git_version.py script
 
+    Serial.println(GIT_BRANCH);
+    u8g.println(BRANCH_NAME);
     u8g.drawBitmapP(90, 15, 5, 40, bitmap_Linux);
 
     } while (u8g.nextPage());

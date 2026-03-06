@@ -9,6 +9,7 @@
 #include "Test_cables/TestCables.h"
 #include "Buzzer.h"
 #include "LED.h"
+#include "reset.h"
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
@@ -73,10 +74,10 @@ static bool evBack = false;
 /* =====================================================
    ACOES
    ===================================================== */
-static void actionLedGreenOn()  { Serial.println(F("LED GREEN ON"));  digitalWrite(A0, HIGH); }
-static void actionLedGreenOff() { Serial.println(F("LED GREEN OFF")); digitalWrite(A0, LOW);  }
-static void actionLedRedOn()    { Serial.println(F("LED RED ON"));    digitalWrite(A2, HIGH); }
-static void actionLedRedOff()   { Serial.println(F("LED RED OFF"));   digitalWrite(A2, LOW);  }
+static void actionLedGreenOn()  { Serial.println(F("LED GREEN ON"));  digitalWrite(A2, HIGH); }
+static void actionLedGreenOff() { Serial.println(F("LED GREEN OFF")); digitalWrite(A2, LOW);  }
+static void actionLedRedOn()    { Serial.println(F("LED RED ON"));    digitalWrite(A0, HIGH); }
+static void actionLedRedOff()   { Serial.println(F("LED RED OFF"));   digitalWrite(A0, LOW);  }
 
 static void actionBlinkTest() {
   Serial.println(F("BLINK"));
@@ -105,6 +106,8 @@ static void actionTestCAB_2572(){ TestCAB_2572(); }
 static void actionAutoTest(){ autoTest(); }
 static void actiondisableBuzzer() { disableBuzzer(); }
 static void actionenableBuzzer() { enableBuzzer(); }
+static void actionReset() { resetArduino(); }
+static void actionSleep() { sleepArduino(); }
 
 
 /* =====================================================
@@ -131,6 +134,8 @@ static MenuItem menuSettings[] = {
   { "LEDs",  menuLEDs, COUNT_OF(menuLEDs), NULL },
   { "Buzzer", buzzerSettings, COUNT_OF(buzzerSettings), NULL },
   { "AUTO TEST",     NULL, 0, actionAutoTest   },
+  { "RESET",         NULL, 0, actionReset       },
+  { "SLEEP",         NULL, 0, actionSleep       },
 };
 
 
