@@ -1,3 +1,7 @@
+/* =====================================================
+   BRANCH BuzzerFeedback
+   ===================================================== */
+
 #ifndef __PROGRESSBAR__H__
 #define __PROGRESSBAR__H__
 #include <U8glib.h>
