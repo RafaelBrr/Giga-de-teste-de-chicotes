@@ -62,6 +62,28 @@ void disableBuzzer() {
   saveBuzzerState();   // salva na EEPROM
 }
 
+void approvedBuzzer() {
+  if(buzzerActive == true){
+  // Emite um tom curto para indicar aprovação
+  digitalWrite(BUZZER, HIGH);
+  delay(200); // Duração do tom (200 ms)
+  digitalWrite(BUZZER, LOW);
+  }
+}
+
+void disapprovedBuzzer() {
+  if(buzzerActive == true){
+
+  for(int i=0; i < 3; i++){
+    // Emite um tom curto para indicar reprovação
+    digitalWrite(BUZZER, HIGH);
+    delay(200); // Duração do tom (200 ms)
+    digitalWrite(BUZZER, LOW);
+    delay(200); // Pausa entre os tons (200 ms)
+  }
+  
+  }
+}
 
 
 //************************************************************************************************** */

@@ -12,5 +12,7 @@
  void enableBuzzer();
  void saveBuzzerState();
  void loadBuzzerState();
+ void approvedBuzzer();
+ void dispprovedBuzzer();
 
 #endif  //!__BUZZER__H__

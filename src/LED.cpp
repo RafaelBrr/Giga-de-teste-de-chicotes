@@ -9,6 +9,8 @@
 #define REDLED A2
 #define GREENLED A0
 
+bool autoTestStatus = true;
+
 void setupLEDs() {
   // pinMode(A0, OUTPUT); // LED Verde
   // pinMode(A2, OUTPUT); // LED Vermelho
@@ -44,6 +46,7 @@ void blinkLEDs(int times, int delayTime) {
 }
 
 void autoTest() {
+  if(autoTestStatus) {
   Serial.println(F("Auto-test Started..."));
   turnOnGreenLED();
   delay(1000);
@@ -54,8 +57,16 @@ void autoTest() {
   turnOffRedLED();
   delay(500);
   blinkLEDs(5, 300);
-  testBuzzer();
+  //testBuzzer();
+  approvedBuzzer();
   Serial.println(F("Auto-test completed."));
+  }else {
+  Serial.println(F("Auto-test is disabled."));
+  dispprovedBuzzer();
+ 
+   
+  }
+ 
 }
 
 
