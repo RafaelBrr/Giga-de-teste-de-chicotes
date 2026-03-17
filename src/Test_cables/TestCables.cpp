@@ -1,6 +1,13 @@
+/* =====================================================
+   BRANCH BuzzerFeedback
+   ===================================================== */
+
 #include <Arduino.h>
 #include "U8glib.h"
 #include "TestCables.h"
+#include "LED.h"
+#include "Buzzer.h"
+#include "images.h"
 
 extern U8GLIB_ST7920_128X64_1X u8g; //Enable, RW, RS, RESET
 
@@ -29,6 +36,8 @@ bool res = false; // Resultado do teste de continuidade
 void configurarPinosCabo10Vias() {
   for (int i = 0; i < 10; i++) {
     pinMode(txPins[i], OUTPUT);
+    pinMode(46, OUTPUT);
+    digitalWrite(46, LOW); // Ativa o buzzer para indicar início do teste
     digitalWrite(txPins[i], HIGH); // Mantém HIGH por padrão
     Serial.println("Configurado pino de saída: " + String(txPins[i]));
     pinMode(rxPins[i], INPUT_PULLUP); // INPUT_PULLUP simula um resistor interno
@@ -63,10 +72,13 @@ u8g.drawStr(10, 30, "Testando continuidade... do cabo de 10 vias");
       Serial.print("✅ Via ");
       Serial.print(i);
       Serial.println(": OK (continuidade detectada)");
+      continuidade = true;
+      
     } else {
       Serial.print("❌ Via ");
       Serial.print(i);
       Serial.println(": FALHA (sem continuidade)");
+      
       continuidade = false;
     }
 
@@ -75,8 +87,10 @@ u8g.drawStr(10, 30, "Testando continuidade... do cabo de 10 vias");
 
   if (continuidade) {
     Serial.println("🟢 Teste de continuidade: SUCESSO (todas as vias conectadas)");
+      
   } else {
     Serial.println("🔴 Teste de continuidade: FALHA EM UMA OU MAIS VIAS");
+      
   }
 
   return continuidade;
@@ -298,6 +312,31 @@ void Test() {
   }
 
   }
+}
+
+void TestMessageCable(String message) {
+  Serial.println(message);
+  u8g.firstPage();
+  do {
+    u8g.setFont(u8g_font_04b_03);//fonte de 5 pixels
+    u8g.drawStr(10, 20, message.c_str());
+  } while (u8g.nextPage());
+}
+
+void DrawApprovedStatus() {
+  
+  u8g.firstPage();
+  do {
+    u8g.drawBitmapP(10, 15, 4, 32, bitmap_signalaproved32x32);
+  } while (u8g.nextPage());
+}
+
+void DrawDisapprovedStatus() {
+  
+  u8g.firstPage();
+  do {
+    u8g.drawBitmapP(10, 15, 4, 32, bitmap_signalDisaproved32x32);
+  } while (u8g.nextPage());
 }
 
 //******************************************************************************************************************************* */

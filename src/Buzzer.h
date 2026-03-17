@@ -13,6 +13,6 @@
  void saveBuzzerState();
  void loadBuzzerState();
  void approvedBuzzer();
- void dispprovedBuzzer();
+ void disapprovedBuzzer();
 
 #endif  //!__BUZZER__H__

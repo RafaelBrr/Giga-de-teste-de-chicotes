@@ -6,8 +6,8 @@
 #include "LED.h"
 #include "Buzzer.h"
 
-#define REDLED A2
-#define GREENLED A0
+#define REDLED A0
+#define GREENLED A2
 
 bool autoTestStatus = true;
 
@@ -62,7 +62,7 @@ void autoTest() {
   Serial.println(F("Auto-test completed."));
   }else {
   Serial.println(F("Auto-test is disabled."));
-  dispprovedBuzzer();
+  disapprovedBuzzer();
  
    
   }

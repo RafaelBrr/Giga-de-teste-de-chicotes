@@ -20,5 +20,8 @@ bool testeCurtoDetalhado();
 bool testeSequenciaCabo();
 bool testeSequenciaDetalhado();
 void Test();
+void TestMessageCable(String message);
+void DrawApprovedStatus();
+void DrawDisapprovedStatus();
 
 #endif  //!__TESTECAB_2558__H__

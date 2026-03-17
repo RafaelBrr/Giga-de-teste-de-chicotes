@@ -10,6 +10,10 @@
 #define BUZZER 46
 #define TIMEBUZZER 1000 // Tempo que o buzzer ficará ligado durante o teste (em ms)
 #define EEPROM_ADDR_BUZZER 0
+#define BUZZER_ON HIGH
+#define BUZZER_OFF LOW
+#define TIMEBUZZERAPPROVED 1000 // Tempo que o buzzer ficará ligado durante o teste (em ms)
+#define TIMEBUZZERDISAPPROVED 200 // Tempo de cada tom para indicação de reprovação (em ms)
 
 static bool feedbackActive = false;
 static bool buzzerActive = true;
@@ -65,21 +69,21 @@ void disableBuzzer() {
 void approvedBuzzer() {
   if(buzzerActive == true){
   // Emite um tom curto para indicar aprovação
-  digitalWrite(BUZZER, HIGH);
-  delay(200); // Duração do tom (200 ms)
-  digitalWrite(BUZZER, LOW);
+  digitalWrite(BUZZER, BUZZER_ON);
+  delay(TIMEBUZZERAPPROVED); // Duração do tom (200 ms)
+  digitalWrite(BUZZER, BUZZER_OFF);
   }
 }
 
 void disapprovedBuzzer() {
   if(buzzerActive == true){
 
-  for(int i=0; i < 3; i++){
+  for(int i=0; i < 4; i++){
     // Emite um tom curto para indicar reprovação
-    digitalWrite(BUZZER, HIGH);
-    delay(200); // Duração do tom (200 ms)
-    digitalWrite(BUZZER, LOW);
-    delay(200); // Pausa entre os tons (200 ms)
+    digitalWrite(BUZZER, BUZZER_ON);
+    delay(TIMEBUZZERDISAPPROVED); // Duração do tom (200 ms)
+    digitalWrite(BUZZER, BUZZER_OFF);
+    delay(TIMEBUZZERDISAPPROVED); // Pausa entre os tons (200 ms)
   }
   
   }

@@ -15,7 +15,7 @@ void loadBuzzerState();
 void enableBuzzer();
 void disableBuzzer();
 void approvedBuzzer();
-void disapprovedBuzzer();
+void dispprovedBuzzer();
 
 // bool isButtonPressed(int pin);
 
